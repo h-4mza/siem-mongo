@@ -131,5 +131,5 @@ spark-submit --packages org.mongodb.spark:mongo-spark-connector_2.12:10.x.x spar
 
 ### 10. Lancement du Dashboard
 ```bash
-python dashboard/app.py
+streamlit run dashboard/app.py
 ```
