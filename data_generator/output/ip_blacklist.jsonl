@@ -1,0 +1,200 @@
+{"ip": "198.51.100.1", "reason": "Tor Exit Node", "created_at": "2026-10-28T06:40:16Z", "expires_at": "2026-11-04T06:40:16Z"}
+{"ip": "198.51.100.2", "reason": "Brute-Force Network", "created_at": "2026-10-27T17:27:33Z", "expires_at": "2026-11-03T17:27:33Z"}
+{"ip": "198.51.100.3", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-31T02:50:10Z", "expires_at": "2026-11-07T02:50:10Z"}
+{"ip": "198.51.100.4", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T13:27:31Z", "expires_at": "2026-11-06T13:27:31Z"}
+{"ip": "198.51.100.5", "reason": "Phishing Infrastructure", "created_at": "2026-10-29T23:33:35Z", "expires_at": "2026-11-05T23:33:35Z"}
+{"ip": "198.51.100.6", "reason": "Brute-Force Network", "created_at": "2026-10-27T20:02:34Z", "expires_at": "2026-11-03T20:02:34Z"}
+{"ip": "198.51.100.7", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T01:01:25Z", "expires_at": "2026-11-04T01:01:25Z"}
+{"ip": "198.51.100.8", "reason": "Known C2 Server", "created_at": "2026-10-30T01:57:53Z", "expires_at": "2026-11-06T01:57:53Z"}
+{"ip": "198.51.100.9", "reason": "Phishing Infrastructure", "created_at": "2026-10-27T11:14:18Z", "expires_at": "2026-11-03T11:14:18Z"}
+{"ip": "198.51.100.10", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T00:31:52Z", "expires_at": "2026-11-05T00:31:52Z"}
+{"ip": "198.51.100.11", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T18:01:18Z", "expires_at": "2026-11-06T18:01:18Z"}
+{"ip": "198.51.100.12", "reason": "Known C2 Server", "created_at": "2026-10-27T11:08:28Z", "expires_at": "2026-11-03T11:08:28Z"}
+{"ip": "198.51.100.13", "reason": "Known C2 Server", "created_at": "2026-10-29T21:48:45Z", "expires_at": "2026-11-05T21:48:45Z"}
+{"ip": "198.51.100.14", "reason": "Known C2 Server", "created_at": "2026-10-30T17:27:09Z", "expires_at": "2026-11-06T17:27:09Z"}
+{"ip": "198.51.100.15", "reason": "Known C2 Server", "created_at": "2026-10-28T07:33:36Z", "expires_at": "2026-11-04T07:33:36Z"}
+{"ip": "198.51.100.16", "reason": "Known C2 Server", "created_at": "2026-10-28T12:54:37Z", "expires_at": "2026-11-04T12:54:37Z"}
+{"ip": "198.51.100.17", "reason": "Tor Exit Node", "created_at": "2026-10-29T15:41:40Z", "expires_at": "2026-11-05T15:41:40Z"}
+{"ip": "198.51.100.18", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T00:12:05Z", "expires_at": "2026-11-06T00:12:05Z"}
+{"ip": "198.51.100.19", "reason": "Tor Exit Node", "created_at": "2026-10-30T04:33:32Z", "expires_at": "2026-11-06T04:33:32Z"}
+{"ip": "198.51.100.20", "reason": "Known C2 Server", "created_at": "2026-10-28T12:19:39Z", "expires_at": "2026-11-04T12:19:39Z"}
+{"ip": "198.51.100.21", "reason": "Botnet Command & Control", "created_at": "2026-10-29T21:08:02Z", "expires_at": "2026-11-05T21:08:02Z"}
+{"ip": "198.51.100.22", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T14:48:26Z", "expires_at": "2026-11-05T14:48:26Z"}
+{"ip": "198.51.100.23", "reason": "Brute-Force Network", "created_at": "2026-10-28T08:12:26Z", "expires_at": "2026-11-04T08:12:26Z"}
+{"ip": "198.51.100.24", "reason": "Brute-Force Network", "created_at": "2026-10-28T22:39:58Z", "expires_at": "2026-11-04T22:39:58Z"}
+{"ip": "198.51.100.25", "reason": "Tor Exit Node", "created_at": "2026-10-29T02:06:33Z", "expires_at": "2026-11-05T02:06:33Z"}
+{"ip": "198.51.100.26", "reason": "Known C2 Server", "created_at": "2026-10-29T13:02:49Z", "expires_at": "2026-11-05T13:02:49Z"}
+{"ip": "198.51.100.27", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T02:54:56Z", "expires_at": "2026-11-06T02:54:56Z"}
+{"ip": "198.51.100.28", "reason": "Tor Exit Node", "created_at": "2026-10-29T08:21:28Z", "expires_at": "2026-11-05T08:21:28Z"}
+{"ip": "198.51.100.29", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T03:46:30Z", "expires_at": "2026-11-06T03:46:30Z"}
+{"ip": "198.51.100.30", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T11:52:32Z", "expires_at": "2026-11-06T11:52:32Z"}
+{"ip": "198.51.100.31", "reason": "Tor Exit Node", "created_at": "2026-10-27T23:29:07Z", "expires_at": "2026-11-03T23:29:07Z"}
+{"ip": "198.51.100.32", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T15:23:10Z", "expires_at": "2026-11-05T15:23:10Z"}
+{"ip": "198.51.100.33", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T20:24:49Z", "expires_at": "2026-11-04T20:24:49Z"}
+{"ip": "198.51.100.34", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T15:15:34Z", "expires_at": "2026-11-06T15:15:34Z"}
+{"ip": "198.51.100.35", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T05:12:17Z", "expires_at": "2026-11-06T05:12:17Z"}
+{"ip": "198.51.100.36", "reason": "Brute-Force Network", "created_at": "2026-10-29T14:05:54Z", "expires_at": "2026-11-05T14:05:54Z"}
+{"ip": "198.51.100.37", "reason": "Known C2 Server", "created_at": "2026-10-31T10:24:48Z", "expires_at": "2026-11-07T10:24:48Z"}
+{"ip": "198.51.100.38", "reason": "Botnet Command & Control", "created_at": "2026-10-29T06:03:52Z", "expires_at": "2026-11-05T06:03:52Z"}
+{"ip": "198.51.100.39", "reason": "Brute-Force Network", "created_at": "2026-10-29T07:46:08Z", "expires_at": "2026-11-05T07:46:08Z"}
+{"ip": "198.51.100.40", "reason": "Known C2 Server", "created_at": "2026-10-30T10:07:49Z", "expires_at": "2026-11-06T10:07:49Z"}
+{"ip": "198.51.100.41", "reason": "Brute-Force Network", "created_at": "2026-10-30T09:42:19Z", "expires_at": "2026-11-06T09:42:19Z"}
+{"ip": "198.51.100.42", "reason": "Botnet Command & Control", "created_at": "2026-10-29T04:22:08Z", "expires_at": "2026-11-05T04:22:08Z"}
+{"ip": "198.51.100.43", "reason": "Known C2 Server", "created_at": "2026-10-28T08:24:06Z", "expires_at": "2026-11-04T08:24:06Z"}
+{"ip": "198.51.100.44", "reason": "Known C2 Server", "created_at": "2026-10-28T08:48:35Z", "expires_at": "2026-11-04T08:48:35Z"}
+{"ip": "198.51.100.45", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T13:15:14Z", "expires_at": "2026-11-04T13:15:14Z"}
+{"ip": "198.51.100.46", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T16:23:14Z", "expires_at": "2026-11-04T16:23:14Z"}
+{"ip": "198.51.100.47", "reason": "Known C2 Server", "created_at": "2026-10-27T11:03:58Z", "expires_at": "2026-11-03T11:03:58Z"}
+{"ip": "198.51.100.48", "reason": "Tor Exit Node", "created_at": "2026-10-28T00:45:19Z", "expires_at": "2026-11-04T00:45:19Z"}
+{"ip": "198.51.100.49", "reason": "Botnet Command & Control", "created_at": "2026-10-29T08:11:45Z", "expires_at": "2026-11-05T08:11:45Z"}
+{"ip": "198.51.100.50", "reason": "Botnet Command & Control", "created_at": "2026-10-28T20:31:59Z", "expires_at": "2026-11-04T20:31:59Z"}
+{"ip": "198.51.100.51", "reason": "Botnet Command & Control", "created_at": "2026-10-28T20:51:57Z", "expires_at": "2026-11-04T20:51:57Z"}
+{"ip": "198.51.100.52", "reason": "Known C2 Server", "created_at": "2026-10-31T04:04:21Z", "expires_at": "2026-11-07T04:04:21Z"}
+{"ip": "198.51.100.53", "reason": "Botnet Command & Control", "created_at": "2026-10-29T03:15:37Z", "expires_at": "2026-11-05T03:15:37Z"}
+{"ip": "198.51.100.54", "reason": "Known C2 Server", "created_at": "2026-10-31T06:09:37Z", "expires_at": "2026-11-07T06:09:37Z"}
+{"ip": "198.51.100.55", "reason": "Known C2 Server", "created_at": "2026-10-28T23:45:18Z", "expires_at": "2026-11-04T23:45:18Z"}
+{"ip": "198.51.100.56", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T08:17:21Z", "expires_at": "2026-11-06T08:17:21Z"}
+{"ip": "198.51.100.57", "reason": "Brute-Force Network", "created_at": "2026-10-28T16:11:45Z", "expires_at": "2026-11-04T16:11:45Z"}
+{"ip": "198.51.100.58", "reason": "Tor Exit Node", "created_at": "2026-10-30T20:41:43Z", "expires_at": "2026-11-06T20:41:43Z"}
+{"ip": "198.51.100.59", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T17:16:39Z", "expires_at": "2026-11-04T17:16:39Z"}
+{"ip": "198.51.100.60", "reason": "Botnet Command & Control", "created_at": "2026-10-29T03:46:18Z", "expires_at": "2026-11-05T03:46:18Z"}
+{"ip": "198.51.100.61", "reason": "Phishing Infrastructure", "created_at": "2026-10-27T11:28:02Z", "expires_at": "2026-11-03T11:28:02Z"}
+{"ip": "198.51.100.62", "reason": "Brute-Force Network", "created_at": "2026-10-27T19:36:03Z", "expires_at": "2026-11-03T19:36:03Z"}
+{"ip": "198.51.100.63", "reason": "Tor Exit Node", "created_at": "2026-10-30T11:39:25Z", "expires_at": "2026-11-06T11:39:25Z"}
+{"ip": "198.51.100.64", "reason": "Phishing Infrastructure", "created_at": "2026-10-29T21:04:29Z", "expires_at": "2026-11-05T21:04:29Z"}
+{"ip": "198.51.100.65", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-27T10:59:12Z", "expires_at": "2026-11-03T10:59:12Z"}
+{"ip": "198.51.100.66", "reason": "Botnet Command & Control", "created_at": "2026-10-27T13:00:14Z", "expires_at": "2026-11-03T13:00:14Z"}
+{"ip": "198.51.100.67", "reason": "Tor Exit Node", "created_at": "2026-10-31T17:31:23Z", "expires_at": "2026-11-07T17:31:23Z"}
+{"ip": "198.51.100.68", "reason": "Brute-Force Network", "created_at": "2026-10-28T01:19:37Z", "expires_at": "2026-11-04T01:19:37Z"}
+{"ip": "198.51.100.69", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T00:31:12Z", "expires_at": "2026-11-05T00:31:12Z"}
+{"ip": "198.51.100.70", "reason": "Brute-Force Network", "created_at": "2026-10-27T16:41:31Z", "expires_at": "2026-11-03T16:41:31Z"}
+{"ip": "198.51.100.71", "reason": "Botnet Command & Control", "created_at": "2026-10-28T15:37:40Z", "expires_at": "2026-11-04T15:37:40Z"}
+{"ip": "198.51.100.72", "reason": "Known C2 Server", "created_at": "2026-10-28T19:10:30Z", "expires_at": "2026-11-04T19:10:30Z"}
+{"ip": "198.51.100.73", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T21:17:01Z", "expires_at": "2026-11-04T21:17:01Z"}
+{"ip": "198.51.100.74", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T13:42:43Z", "expires_at": "2026-11-04T13:42:43Z"}
+{"ip": "198.51.100.75", "reason": "Tor Exit Node", "created_at": "2026-10-27T14:28:57Z", "expires_at": "2026-11-03T14:28:57Z"}
+{"ip": "198.51.100.76", "reason": "Phishing Infrastructure", "created_at": "2026-10-31T14:53:43Z", "expires_at": "2026-11-07T14:53:43Z"}
+{"ip": "198.51.100.77", "reason": "Brute-Force Network", "created_at": "2026-10-28T06:53:07Z", "expires_at": "2026-11-04T06:53:07Z"}
+{"ip": "198.51.100.78", "reason": "Brute-Force Network", "created_at": "2026-10-27T16:58:26Z", "expires_at": "2026-11-03T16:58:26Z"}
+{"ip": "198.51.100.79", "reason": "Botnet Command & Control", "created_at": "2026-10-30T02:55:45Z", "expires_at": "2026-11-06T02:55:45Z"}
+{"ip": "198.51.100.80", "reason": "Known C2 Server", "created_at": "2026-10-27T22:13:03Z", "expires_at": "2026-11-03T22:13:03Z"}
+{"ip": "198.51.100.81", "reason": "Brute-Force Network", "created_at": "2026-10-29T13:53:59Z", "expires_at": "2026-11-05T13:53:59Z"}
+{"ip": "198.51.100.82", "reason": "Phishing Infrastructure", "created_at": "2026-10-31T17:48:29Z", "expires_at": "2026-11-07T17:48:29Z"}
+{"ip": "198.51.100.83", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T08:36:02Z", "expires_at": "2026-11-06T08:36:02Z"}
+{"ip": "198.51.100.84", "reason": "Botnet Command & Control", "created_at": "2026-10-31T12:51:28Z", "expires_at": "2026-11-07T12:51:28Z"}
+{"ip": "198.51.100.85", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T19:57:18Z", "expires_at": "2026-11-04T19:57:18Z"}
+{"ip": "198.51.100.86", "reason": "Tor Exit Node", "created_at": "2026-10-29T23:32:41Z", "expires_at": "2026-11-05T23:32:41Z"}
+{"ip": "198.51.100.87", "reason": "Botnet Command & Control", "created_at": "2026-10-30T14:46:00Z", "expires_at": "2026-11-06T14:46:00Z"}
+{"ip": "198.51.100.88", "reason": "Botnet Command & Control", "created_at": "2026-10-29T20:17:10Z", "expires_at": "2026-11-05T20:17:10Z"}
+{"ip": "198.51.100.89", "reason": "Known C2 Server", "created_at": "2026-10-27T13:06:09Z", "expires_at": "2026-11-03T13:06:09Z"}
+{"ip": "198.51.100.90", "reason": "Phishing Infrastructure", "created_at": "2026-10-31T16:21:12Z", "expires_at": "2026-11-07T16:21:12Z"}
+{"ip": "198.51.100.91", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-27T20:35:47Z", "expires_at": "2026-11-03T20:35:47Z"}
+{"ip": "198.51.100.92", "reason": "Botnet Command & Control", "created_at": "2026-10-27T17:32:28Z", "expires_at": "2026-11-03T17:32:28Z"}
+{"ip": "198.51.100.93", "reason": "Brute-Force Network", "created_at": "2026-10-27T14:18:20Z", "expires_at": "2026-11-03T14:18:20Z"}
+{"ip": "198.51.100.94", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T16:38:00Z", "expires_at": "2026-11-04T16:38:00Z"}
+{"ip": "198.51.100.95", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T01:03:36Z", "expires_at": "2026-11-06T01:03:36Z"}
+{"ip": "198.51.100.96", "reason": "Botnet Command & Control", "created_at": "2026-10-29T01:16:18Z", "expires_at": "2026-11-05T01:16:18Z"}
+{"ip": "198.51.100.97", "reason": "Botnet Command & Control", "created_at": "2026-10-29T19:14:12Z", "expires_at": "2026-11-05T19:14:12Z"}
+{"ip": "198.51.100.98", "reason": "Tor Exit Node", "created_at": "2026-10-31T11:33:18Z", "expires_at": "2026-11-07T11:33:18Z"}
+{"ip": "198.51.100.99", "reason": "Brute-Force Network", "created_at": "2026-10-27T10:24:29Z", "expires_at": "2026-11-03T10:24:29Z"}
+{"ip": "198.51.100.100", "reason": "Tor Exit Node", "created_at": "2026-10-29T12:54:07Z", "expires_at": "2026-11-05T12:54:07Z"}
+{"ip": "198.51.100.101", "reason": "Tor Exit Node", "created_at": "2026-10-30T09:06:13Z", "expires_at": "2026-11-06T09:06:13Z"}
+{"ip": "198.51.100.102", "reason": "Known C2 Server", "created_at": "2026-10-29T15:32:27Z", "expires_at": "2026-11-05T15:32:27Z"}
+{"ip": "198.51.100.103", "reason": "Brute-Force Network", "created_at": "2026-10-29T09:44:21Z", "expires_at": "2026-11-05T09:44:21Z"}
+{"ip": "198.51.100.104", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T19:50:43Z", "expires_at": "2026-11-05T19:50:43Z"}
+{"ip": "198.51.100.105", "reason": "Botnet Command & Control", "created_at": "2026-10-30T13:02:33Z", "expires_at": "2026-11-06T13:02:33Z"}
+{"ip": "198.51.100.106", "reason": "Botnet Command & Control", "created_at": "2026-10-28T08:06:09Z", "expires_at": "2026-11-04T08:06:09Z"}
+{"ip": "198.51.100.107", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-31T01:59:25Z", "expires_at": "2026-11-07T01:59:25Z"}
+{"ip": "198.51.100.108", "reason": "Brute-Force Network", "created_at": "2026-10-27T19:48:59Z", "expires_at": "2026-11-03T19:48:59Z"}
+{"ip": "198.51.100.109", "reason": "Known C2 Server", "created_at": "2026-10-30T17:01:13Z", "expires_at": "2026-11-06T17:01:13Z"}
+{"ip": "198.51.100.110", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T09:01:14Z", "expires_at": "2026-11-04T09:01:14Z"}
+{"ip": "198.51.100.111", "reason": "Known C2 Server", "created_at": "2026-10-31T04:47:53Z", "expires_at": "2026-11-07T04:47:53Z"}
+{"ip": "198.51.100.112", "reason": "Known C2 Server", "created_at": "2026-10-31T01:55:22Z", "expires_at": "2026-11-07T01:55:22Z"}
+{"ip": "198.51.100.113", "reason": "Known C2 Server", "created_at": "2026-10-30T19:22:18Z", "expires_at": "2026-11-06T19:22:18Z"}
+{"ip": "198.51.100.114", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T05:30:13Z", "expires_at": "2026-11-06T05:30:13Z"}
+{"ip": "198.51.100.115", "reason": "Known C2 Server", "created_at": "2026-10-31T14:54:01Z", "expires_at": "2026-11-07T14:54:01Z"}
+{"ip": "198.51.100.116", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-27T20:57:46Z", "expires_at": "2026-11-03T20:57:46Z"}
+{"ip": "198.51.100.117", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-31T13:28:29Z", "expires_at": "2026-11-07T13:28:29Z"}
+{"ip": "198.51.100.118", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T12:30:58Z", "expires_at": "2026-11-04T12:30:58Z"}
+{"ip": "198.51.100.119", "reason": "Brute-Force Network", "created_at": "2026-10-30T04:43:52Z", "expires_at": "2026-11-06T04:43:52Z"}
+{"ip": "198.51.100.120", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T02:08:11Z", "expires_at": "2026-11-04T02:08:11Z"}
+{"ip": "198.51.100.121", "reason": "Tor Exit Node", "created_at": "2026-10-30T23:19:28Z", "expires_at": "2026-11-06T23:19:28Z"}
+{"ip": "198.51.100.122", "reason": "Phishing Infrastructure", "created_at": "2026-10-29T20:11:10Z", "expires_at": "2026-11-05T20:11:10Z"}
+{"ip": "198.51.100.123", "reason": "Tor Exit Node", "created_at": "2026-10-30T12:50:34Z", "expires_at": "2026-11-06T12:50:34Z"}
+{"ip": "198.51.100.124", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-31T05:34:26Z", "expires_at": "2026-11-07T05:34:26Z"}
+{"ip": "198.51.100.125", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T01:01:40Z", "expires_at": "2026-11-06T01:01:40Z"}
+{"ip": "198.51.100.126", "reason": "Known C2 Server", "created_at": "2026-10-30T00:54:54Z", "expires_at": "2026-11-06T00:54:54Z"}
+{"ip": "198.51.100.127", "reason": "Known C2 Server", "created_at": "2026-10-28T07:48:23Z", "expires_at": "2026-11-04T07:48:23Z"}
+{"ip": "198.51.100.128", "reason": "Phishing Infrastructure", "created_at": "2026-10-31T16:52:33Z", "expires_at": "2026-11-07T16:52:33Z"}
+{"ip": "198.51.100.129", "reason": "Brute-Force Network", "created_at": "2026-10-30T08:32:53Z", "expires_at": "2026-11-06T08:32:53Z"}
+{"ip": "198.51.100.130", "reason": "Brute-Force Network", "created_at": "2026-10-29T02:29:20Z", "expires_at": "2026-11-05T02:29:20Z"}
+{"ip": "198.51.100.131", "reason": "Tor Exit Node", "created_at": "2026-10-28T22:53:57Z", "expires_at": "2026-11-04T22:53:57Z"}
+{"ip": "198.51.100.132", "reason": "Tor Exit Node", "created_at": "2026-10-28T01:04:31Z", "expires_at": "2026-11-04T01:04:31Z"}
+{"ip": "198.51.100.133", "reason": "Tor Exit Node", "created_at": "2026-10-29T16:17:08Z", "expires_at": "2026-11-05T16:17:08Z"}
+{"ip": "198.51.100.134", "reason": "Tor Exit Node", "created_at": "2026-10-30T02:47:29Z", "expires_at": "2026-11-06T02:47:29Z"}
+{"ip": "198.51.100.135", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T16:30:33Z", "expires_at": "2026-11-04T16:30:33Z"}
+{"ip": "198.51.100.136", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T10:12:47Z", "expires_at": "2026-11-05T10:12:47Z"}
+{"ip": "198.51.100.137", "reason": "Botnet Command & Control", "created_at": "2026-10-30T14:10:39Z", "expires_at": "2026-11-06T14:10:39Z"}
+{"ip": "198.51.100.138", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T03:57:52Z", "expires_at": "2026-11-05T03:57:52Z"}
+{"ip": "198.51.100.139", "reason": "Botnet Command & Control", "created_at": "2026-10-27T20:10:11Z", "expires_at": "2026-11-03T20:10:11Z"}
+{"ip": "198.51.100.140", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T06:28:40Z", "expires_at": "2026-11-04T06:28:40Z"}
+{"ip": "198.51.100.141", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T02:15:11Z", "expires_at": "2026-11-04T02:15:11Z"}
+{"ip": "198.51.100.142", "reason": "Known C2 Server", "created_at": "2026-10-27T11:21:06Z", "expires_at": "2026-11-03T11:21:06Z"}
+{"ip": "198.51.100.143", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T11:38:39Z", "expires_at": "2026-11-04T11:38:39Z"}
+{"ip": "198.51.100.144", "reason": "Tor Exit Node", "created_at": "2026-10-31T13:15:55Z", "expires_at": "2026-11-07T13:15:55Z"}
+{"ip": "198.51.100.145", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T12:31:23Z", "expires_at": "2026-11-05T12:31:23Z"}
+{"ip": "198.51.100.146", "reason": "Brute-Force Network", "created_at": "2026-10-29T01:01:00Z", "expires_at": "2026-11-05T01:01:00Z"}
+{"ip": "198.51.100.147", "reason": "Tor Exit Node", "created_at": "2026-10-29T01:17:48Z", "expires_at": "2026-11-05T01:17:48Z"}
+{"ip": "198.51.100.148", "reason": "Botnet Command & Control", "created_at": "2026-10-30T02:27:26Z", "expires_at": "2026-11-06T02:27:26Z"}
+{"ip": "198.51.100.149", "reason": "Botnet Command & Control", "created_at": "2026-10-29T08:35:14Z", "expires_at": "2026-11-05T08:35:14Z"}
+{"ip": "198.51.100.150", "reason": "Tor Exit Node", "created_at": "2026-10-29T18:10:08Z", "expires_at": "2026-11-05T18:10:08Z"}
+{"ip": "198.51.100.151", "reason": "Phishing Infrastructure", "created_at": "2026-10-27T14:22:39Z", "expires_at": "2026-11-03T14:22:39Z"}
+{"ip": "198.51.100.152", "reason": "Brute-Force Network", "created_at": "2026-10-28T01:02:14Z", "expires_at": "2026-11-04T01:02:14Z"}
+{"ip": "198.51.100.153", "reason": "Tor Exit Node", "created_at": "2026-10-31T18:07:26Z", "expires_at": "2026-11-07T18:07:26Z"}
+{"ip": "198.51.100.154", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-31T04:38:11Z", "expires_at": "2026-11-07T04:38:11Z"}
+{"ip": "198.51.100.155", "reason": "Botnet Command & Control", "created_at": "2026-10-27T21:29:55Z", "expires_at": "2026-11-03T21:29:55Z"}
+{"ip": "198.51.100.156", "reason": "Known C2 Server", "created_at": "2026-10-28T00:58:02Z", "expires_at": "2026-11-04T00:58:02Z"}
+{"ip": "198.51.100.157", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T23:50:35Z", "expires_at": "2026-11-04T23:50:35Z"}
+{"ip": "198.51.100.158", "reason": "Tor Exit Node", "created_at": "2026-10-31T18:51:26Z", "expires_at": "2026-11-07T18:51:26Z"}
+{"ip": "198.51.100.159", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T06:08:05Z", "expires_at": "2026-11-04T06:08:05Z"}
+{"ip": "198.51.100.160", "reason": "Known C2 Server", "created_at": "2026-10-29T06:35:58Z", "expires_at": "2026-11-05T06:35:58Z"}
+{"ip": "198.51.100.161", "reason": "Tor Exit Node", "created_at": "2026-10-31T19:23:05Z", "expires_at": "2026-11-07T19:23:05Z"}
+{"ip": "198.51.100.162", "reason": "Phishing Infrastructure", "created_at": "2026-10-29T13:06:54Z", "expires_at": "2026-11-05T13:06:54Z"}
+{"ip": "198.51.100.163", "reason": "Tor Exit Node", "created_at": "2026-10-28T21:53:55Z", "expires_at": "2026-11-04T21:53:55Z"}
+{"ip": "198.51.100.164", "reason": "Botnet Command & Control", "created_at": "2026-10-29T02:02:46Z", "expires_at": "2026-11-05T02:02:46Z"}
+{"ip": "198.51.100.165", "reason": "Brute-Force Network", "created_at": "2026-10-27T19:04:56Z", "expires_at": "2026-11-03T19:04:56Z"}
+{"ip": "198.51.100.166", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-28T11:11:19Z", "expires_at": "2026-11-04T11:11:19Z"}
+{"ip": "198.51.100.167", "reason": "Botnet Command & Control", "created_at": "2026-10-27T17:28:19Z", "expires_at": "2026-11-03T17:28:19Z"}
+{"ip": "198.51.100.168", "reason": "Botnet Command & Control", "created_at": "2026-10-30T14:12:38Z", "expires_at": "2026-11-06T14:12:38Z"}
+{"ip": "198.51.100.169", "reason": "Tor Exit Node", "created_at": "2026-10-29T22:47:45Z", "expires_at": "2026-11-05T22:47:45Z"}
+{"ip": "198.51.100.170", "reason": "Botnet Command & Control", "created_at": "2026-10-27T23:44:22Z", "expires_at": "2026-11-03T23:44:22Z"}
+{"ip": "198.51.100.171", "reason": "Tor Exit Node", "created_at": "2026-10-30T22:45:16Z", "expires_at": "2026-11-06T22:45:16Z"}
+{"ip": "198.51.100.172", "reason": "Botnet Command & Control", "created_at": "2026-10-30T02:57:35Z", "expires_at": "2026-11-06T02:57:35Z"}
+{"ip": "198.51.100.173", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-30T20:43:58Z", "expires_at": "2026-11-06T20:43:58Z"}
+{"ip": "198.51.100.174", "reason": "Phishing Infrastructure", "created_at": "2026-10-28T04:25:46Z", "expires_at": "2026-11-04T04:25:46Z"}
+{"ip": "198.51.100.175", "reason": "Botnet Command & Control", "created_at": "2026-10-28T17:55:49Z", "expires_at": "2026-11-04T17:55:49Z"}
+{"ip": "198.51.100.176", "reason": "Known C2 Server", "created_at": "2026-10-30T02:45:23Z", "expires_at": "2026-11-06T02:45:23Z"}
+{"ip": "198.51.100.177", "reason": "Known C2 Server", "created_at": "2026-10-31T08:37:56Z", "expires_at": "2026-11-07T08:37:56Z"}
+{"ip": "198.51.100.178", "reason": "Tor Exit Node", "created_at": "2026-10-31T00:32:16Z", "expires_at": "2026-11-07T00:32:16Z"}
+{"ip": "198.51.100.179", "reason": "Known C2 Server", "created_at": "2026-10-28T02:57:02Z", "expires_at": "2026-11-04T02:57:02Z"}
+{"ip": "198.51.100.180", "reason": "Brute-Force Network", "created_at": "2026-10-28T17:05:04Z", "expires_at": "2026-11-04T17:05:04Z"}
+{"ip": "198.51.100.181", "reason": "Known C2 Server", "created_at": "2026-10-31T01:38:28Z", "expires_at": "2026-11-07T01:38:28Z"}
+{"ip": "198.51.100.182", "reason": "Botnet Command & Control", "created_at": "2026-10-31T12:12:11Z", "expires_at": "2026-11-07T12:12:11Z"}
+{"ip": "198.51.100.183", "reason": "Botnet Command & Control", "created_at": "2026-10-28T06:29:24Z", "expires_at": "2026-11-04T06:29:24Z"}
+{"ip": "198.51.100.184", "reason": "Brute-Force Network", "created_at": "2026-10-30T01:23:07Z", "expires_at": "2026-11-06T01:23:07Z"}
+{"ip": "198.51.100.185", "reason": "Known C2 Server", "created_at": "2026-10-30T00:22:32Z", "expires_at": "2026-11-06T00:22:32Z"}
+{"ip": "198.51.100.186", "reason": "Mass Scanner / Crawler", "created_at": "2026-10-29T12:25:48Z", "expires_at": "2026-11-05T12:25:48Z"}
+{"ip": "198.51.100.187", "reason": "Botnet Command & Control", "created_at": "2026-10-28T22:21:14Z", "expires_at": "2026-11-04T22:21:14Z"}
+{"ip": "198.51.100.188", "reason": "Brute-Force Network", "created_at": "2026-10-29T11:51:02Z", "expires_at": "2026-11-05T11:51:02Z"}
+{"ip": "198.51.100.189", "reason": "Known C2 Server", "created_at": "2026-10-27T21:34:59Z", "expires_at": "2026-11-03T21:34:59Z"}
+{"ip": "198.51.100.190", "reason": "Phishing Infrastructure", "created_at": "2026-10-30T16:07:47Z", "expires_at": "2026-11-06T16:07:47Z"}
+{"ip": "198.51.100.191", "reason": "Tor Exit Node", "created_at": "2026-10-31T14:13:05Z", "expires_at": "2026-11-07T14:13:05Z"}
+{"ip": "198.51.100.192", "reason": "Botnet Command & Control", "created_at": "2026-10-28T11:41:18Z", "expires_at": "2026-11-04T11:41:18Z"}
+{"ip": "198.51.100.193", "reason": "Known C2 Server", "created_at": "2026-10-28T20:02:14Z", "expires_at": "2026-11-04T20:02:14Z"}
+{"ip": "198.51.100.194", "reason": "Tor Exit Node", "created_at": "2026-10-30T18:54:06Z", "expires_at": "2026-11-06T18:54:06Z"}
+{"ip": "198.51.100.195", "reason": "Botnet Command & Control", "created_at": "2026-10-30T11:10:16Z", "expires_at": "2026-11-06T11:10:16Z"}
+{"ip": "198.51.100.196", "reason": "Brute-Force Network", "created_at": "2026-10-27T22:02:34Z", "expires_at": "2026-11-03T22:02:34Z"}
+{"ip": "198.51.100.197", "reason": "Botnet Command & Control", "created_at": "2026-10-28T16:53:39Z", "expires_at": "2026-11-04T16:53:39Z"}
+{"ip": "198.51.100.198", "reason": "Phishing Infrastructure", "created_at": "2026-10-31T04:02:26Z", "expires_at": "2026-11-07T04:02:26Z"}
+{"ip": "198.51.100.199", "reason": "Phishing Infrastructure", "created_at": "2026-10-29T12:21:46Z", "expires_at": "2026-11-05T12:21:46Z"}
+{"ip": "198.51.100.200", "reason": "Botnet Command & Control", "created_at": "2026-10-27T13:07:00Z", "expires_at": "2026-11-03T13:07:00Z"}

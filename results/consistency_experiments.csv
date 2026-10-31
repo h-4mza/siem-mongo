@@ -1,0 +1,8 @@
+operation,type,configuration,write_concern,journal,read_concern,read_preference,iterations,temps_moyen_ms,p95_ms,description
+T1,write_concern,w:1,w:1,False,N/A,N/A,200,0.53,0.68,Accusé dès réception mémoire/WAL du primaire (latence minimale)
+T1,write_concern,w:majority,w:majority,False,N/A,N/A,200,0.49,0.68,Consensus majorité (2/3 nœuds) : protège contre le rollback sur failover
+T1,write_concern,w:majority+j:true,w:majority,True,N/A,N/A,200,0.55,0.78,Majorité + fsync journal sur disque : durabilité ACID absolue
+T3,read_concern_and_preference,rc:local + rp:primary,N/A,N/A,local,primary,200,0.45,0.67,"Lecture mémoire primaire directe : latence minimale, dirty read possible si rollback"
+T3,read_concern_and_preference,rc:majority + rp:primary,N/A,N/A,majority,primary,200,0.38,0.6,Lecture primaire sur snapshot validé majorité : lecture cohérente sans dirty read
+T3,read_concern_and_preference,rc:local + rp:secondaryPreferred,N/A,N/A,local,secondaryPreferred,200,0.39,0.59,Lecture déportée sur réplica secondaire si dispo : décharge le primaire
+T3,read_concern_and_preference,rc:majority + rp:secondaryPreferred,N/A,N/A,majority,secondaryPreferred,200,0.47,0.6,Lecture déportée sur secondaire avec consensus majorité garanti

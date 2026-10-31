@@ -1,0 +1,14 @@
+requete,configuration,stage,totalKeysExamined,totalDocsExamined,nReturned,temps_ms,description
+T5,AVEC_INDEX,IXSCAN,2,2,2,1.47,"Index (user_id, result, timestamp) - nReturned > 0 garanti"
+T5,SANS_INDEX,COLLSCAN,0,60500,2,87.48,Balayage complet de la collection (COLLSCAN)
+A25 (freq: auth),AVEC_INDEX,IXSCAN,50,50,50,1.85,Tag fréquent (~63% alertes) - faible sélectivité
+A25 (freq: auth),SANS_INDEX,COLLSCAN,0,78,50,1.64,Tag fréquent sans index (COLLSCAN rapide car limit=50)
+A25 (rare: zero_day),AVEC_INDEX,IXSCAN,40,40,40,2.07,Tag rare (1.25% alertes) - forte sélectivité IXSCAN
+A25 (rare: zero_day),SANS_INDEX,COLLSCAN,0,3200,40,3.40,Tag rare sans index (COLLSCAN doit lire 3 200 documents)
+A17,"INDEX_(result,timestamp)",IXSCAN,2814,2814,323,11.45,Règle ESR : égalité result='failure' puis intervalle date
+A17,INDEX_(timestamp),IXSCAN,4519,4519,323,26.38,Index temporel seul : doit filtrer result après lecture doc
+A17,SANS_INDEX,COLLSCAN,0,60500,323,58.89,COLLSCAN complet (60 500 documents examinés)
+A22,AVEC_$match_date,IXSCAN,29730,29730,16709,670.56,Filtre préalable sur 14 jours via index temporel (volume réduit)
+A22,SANS_$match_date,COLLSCAN,0,60500,34075,1101.54,Groupement brut sur l'intégralité des 60 500 documents
+A18,DÉNORMALISÉE,IXSCAN,49138,49138,870,414.15,Champ user_department stocké dans chaque log (aucun lookup)
+A18,AVEC_$LOOKUP,IXSCAN,49138,49138,16847,5209.19,Jointure $lookup vers collection users (17k+ jointures)
