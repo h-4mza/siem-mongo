@@ -1,23 +1,5 @@
-# Byte-compiled / optimized / DLL files
+data_generator/output/
 __pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual environments
-.venv/
-venv/
-ENV/
-env/
-
-# IDE and Editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Environment variables
+*.pyc
 .env
+results/*.tmp

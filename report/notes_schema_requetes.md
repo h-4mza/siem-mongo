@@ -27,7 +27,7 @@ Toutes les métriques temporelles correspondent à la moyenne sur 5 exécutions 
 | **T15** | Verrouiller un compte (status = locked) | `db.users.updateOne({user_id}, {$set: {status: "locked"}})` | `idx_users_user_id_unique` `(user_id: 1)` | **1.45 ms** | Révocation immédiate d'accès par clé unique lors de la confirmation d'une compromission. |
 | **A16** | Connexions réussies/échouées par jour sur 30 jours | `aggregate([{$group: {_id: {$dateToString}, succes: {$sum: {$cond}}, echecs: {$sum: {$cond}}}}, {$sort: {_id: 1}}])` | `idx_auth_timestamp` `(timestamp: 1)` | **139.89 ms** | Agrégation volumique sur les 60 500 documents avec calcul conditionnel vectorisé par journée. |
 | **A17** | Top 10 IP sources par nombre d'échecs sur une journée | `aggregate([{$match: {result: "failure", timestamp: {$gte, $lte}}}, {$sortByCount: "$source_ip"}, {$limit: 10}])` | `idx_auth_res_time` `(result: 1, timestamp: 1)` | **8.03 ms** | L'index composite ESR restreint la recherche aux seuls échecs du jour sans charger les connexions réussies. |
-| **A18** | Connexions réussies entre 22h et 6h pour un département (sans $lookup) | `aggregate([{$match: {user_department, result: "success", $expr: {$or: [...]}}}, {$group: {_id: "$user_id", nb: {$sum: 1}}}, {$sort: {nb: -1}}])` | Champ dénormalisé `user_department` | **238.56 ms** | La dénormalisation évite une jointure inter-collections sur 60k+ événements (12.6x plus rapide que `$lookup`). |
+| **A18** | Connexions réussies entre 22h et 6h pour un département (sans $lookup) | `aggregate([{$match: {user_department, result: "success", $expr: {$or: [...]}}}, {$group: {_id: "$user_id", nb: {$sum: 1}}}, {$sort: {nb: -1}}])` | Champ dénormalisé `user_department` | **401.86 ms** | La dénormalisation évite une jointure inter-collections sur 60k+ événements (12.7x plus rapide que `$lookup`). |
 | **A19** | Alertes par sévérité et statut | `aggregate([{$group: {_id: {severity: "$severity", status: "$status"}, count: {$sum: 1}}}, {$sort: {"_id.severity": 1}}])` | `idx_alerts_sev_stat_time_desc` | **4.69 ms** | L'index composé préfixé par `(severity, status)` accélère le partitionnement des groupes d'alertes. |
 | **A20** | Octets par hôte pour une journée | `aggregate([{$match: {timestamp: {$gte, $lte}}}, {$group: {_id: "$host_id", total_bytes: {$sum: "$bytes"}, nb_flux: {$sum: 1}}}, {$sort: {total_bytes: -1}}])` | `idx_flows_host_time` `(host_id: 1, timestamp: 1)` | **31.10 ms** | Isole les flux réseau sur la fenêtre d'un jour avant d'agréger les volumes d'octets transférés. |
 | **A21** | Top 10 ports de destination | `aggregate([{$sortByCount: "$dst_port"}, {$limit: 10}])` | `idx_flows_dst_port` `(dst_port: 1)` | **24.05 ms** | Comptage et classement direct sur le champ `dst_port` pour repérer les services ciblés (443, 80, 22, 3389). |
@@ -58,8 +58,8 @@ Toutes les métriques proviennent de l'introspection `explain("executionStats")`
 | | **SANS_INDEX** | `COLLSCAN` | 0 | 60 500 | 323 | 58.89 ms | Balayage complet des 60 500 événements |
 | **A22** *(Voyages multiples)* | **AVEC `$match` temporel (14j)** | `IXSCAN` | **29 730** | **29 730** | **16 709** | **670.56 ms** | **39% de réduction du temps**, 30 770 documents évités |
 | | **SANS `$match` temporel** | `COLLSCAN` | 0 | 60 500 | 34 075 | 1 101.54 ms | Groupement et dédoublonnage sur l'intégralité des 30 jours |
-| **A18** *(Connexions de nuit)* | **DÉNORMALISÉE** | `IXSCAN` | 49 138 | 49 138 | 870 | **414.15 ms** | **12.6x plus rapide**, groupement direct en streaming |
-| | **AVEC `$LOOKUP` (Normalisée)** | `IXSCAN` | 49 138 | 49 138 | 16 847 | 5 209.19 ms | Goulot d'étranglement majeur : jointure de 16 000+ documents |
+| **A18** *(Connexions de nuit)* | **DÉNORMALISÉE** | `IXSCAN` | 49 138 | 49 138 | 870 | **401.86 ms** | **12.7x plus rapide**, groupement direct en streaming |
+| | **AVEC `$LOOKUP` (Normalisée)** | `IXSCAN` | 49 138 | 49 138 | 16 847 | 5 097.19 ms | Goulot d'étranglement majeur : jointure de 16 000+ documents |
 
 ---
 
@@ -88,10 +88,14 @@ Toutes les métriques proviennent de l'introspection `explain("executionStats")`
 - **Sans `$match` temporel** : Le moteur doit grouper et extraire les pays uniques pour l'ensemble des 60 500 événements sur 30 jours, mobilisant **1 101.54 ms**.
 - **Avec `$match` temporel amont (14 jours)** : En restreignant la fenêtre temporelle en première étape de pipeline, l'index temporel élimine 30 770 documents en amont. L'étape `$group` ne traite que 29 730 documents, faisant chuter le temps à **670.56 ms** (**gain de 39%**).
 
-#### 5. Cas A18 : Mesure réelle de la dénormalisation vs jointure `$lookup`
-- **Approche normalisée (`$lookup` vers `users`)** : Pour chaque connexion nocturne réussie, MongoDB doit effectuer une résolution vers la collection `users` pour récupérer le département (16 847 jointures traitées). Le temps d'exécution s'élève à **5 209.19 ms** (~5.2 secondes).
-- **Approche dénormalisée (`user_department` stocké dans le log)** : La requête s'exécute directement sur la collection `authentications` sans aucune jointure inter-collections, en **414.15 ms**.
-- *Conclusion chiffrée* : La dénormalisation apporte un gain de performance direct d'un facteur **12.6x**, justifiant pleinement ce choix de modélisation pour un SIEM à haute cadence d'ingestion et d'analyse.
+#### 5. Cas A18 : Mesure réelle de la dénormalisation vs jointure `$lookup` (et analyse de l'écart 61 ms vs 401 ms)
+- **Origine de l'écart initial (61 ms vs 401 ms)** :
+  - La valeur initiale de ~61 ms observée dans certains tests préliminaires correspondait à une requête restreinte à une période temporelle récente (ex: fenêtre de 7 jours, qui s'exécute en ~44 ms) ou à un sous-ensemble de données.
+  - En revanche, l'évaluation complète sur les **30 jours de la collection (60 500 documents)** sans filtre temporel oblige MongoDB à inspecter les 49 138 connexions réussies pour calculer l'expression horaire `$hour` et filtrer le département Finance, ce qui requiert **401.86 ms**.
+  - **Harmonisation stricte** : Les deux métriques (la suite analytique globale et l'expérience comparative d'indexation) ont été ré-exécutées avec exactement les mêmes paramètres (département `"Finance"`, sur l'intégralité des 30 jours, moyenne sur 5 itérations). Elles affichent désormais rigoureusement le même temps (**401.86 ms** dans `timings.csv` et dans `index_experiments.csv`).
+- **Approche normalisée (`$lookup` vers `users`)** : Pour chaque connexion nocturne réussie, MongoDB doit effectuer une résolution vers la collection `users` pour récupérer le département (16 847 jointures traitées). Le temps d'exécution s'élève à **5 097.19 ms** (~5.1 secondes).
+- **Approche dénormalisée (`user_department` stocké dans le log)** : La requête s'exécute directement sur la collection `authentications` sans aucune jointure inter-collections, en **401.86 ms**.
+- *Conclusion chiffrée* : La dénormalisation apporte un gain de performance direct d'un facteur **12.7x** (401.86 ms vs 5 097.19 ms), justifiant pleinement ce choix de modélisation pour un SIEM à haute cadence d'ingestion et d'analyse.
 
 ---
 
@@ -127,7 +131,7 @@ Les résultats ont été enregistrés dans `results/consistency_experiments.csv`
 ### 3.3. Résilience et Basculement Haute Disponibilité (`failover_test.py`)
 
 Le script `failover_test.py` teste la continuité de service lors de l'arrêt inopiné du conteneur primaire (`docker stop mongo1`) :
-- **Comportement en élection** : Lorsque le primaire disparaît, les nœuds secondaires restants détectent la perte de heartbeat (au bout de ~2 secondes) et déclenchent une élection via l'algorithme de consensus (dérivé de Raft).
+- **Comportement en élection** : Lorsque le primaire disparaît, les nœuds secondaires restants détectent la perte de heartbeat (au bout de ~2 secondes) et déclenchent une élection via l'algorithme de consensus Raft.
 - **Durée d'indisponibilité** : Durant la phase de transition (généralement comprise entre 2 et 8 secondes selon la configuration `electionTimeoutMillis`), aucune écriture ne peut être acceptée par le cluster (`NotWritablePrimary` ou `ServerSelectionTimeoutError`).
 - **Rôle critique de `retryWrites=true`** : Le paramètre `retryWrites=true` permet au pilote PyMongo de gérer de manière transparente les échecs d'écriture transitoires : le pilote réessaie automatiquement l'opération dès que le nouveau primaire a été élu et découvert, évitant ainsi le rejet de requêtes applicatives si la coupure est très brève.
 

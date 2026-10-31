@@ -24,7 +24,7 @@ from pathlib import Path
 from pymongo import MongoClient, ASCENDING, DESCENDING
 
 # Import de l'utilitaire de chronométrage
-from timer import measure_execution, TIMINGS_FILE, RESULTS_DIR
+from timer import measure_execution, record_timing, TIMINGS_FILE, RESULTS_DIR
 
 # Configuration de l'encodage console pour Windows
 if sys.platform == "win32":
@@ -121,11 +121,11 @@ def a18_night_logins_by_department(db, department: str = "Finance") -> list:
         {
             "$group": {
                 "_id": "$user_id",
-                "nb_connexions_nocturnes": {"$sum": 1},
+                "nb_connexions": {"$sum": 1},
                 "dernier_acces": {"$max": "$timestamp"}
             }
         },
-        {"$sort": {"nb_connexions_nocturnes": -1}},
+        {"$sort": {"nb_connexions": -1}},
         {"$limit": 20}
     ]
     return list(db.authentications.aggregate(pipeline))
@@ -636,7 +636,9 @@ def run_index_experiments(db):
     ]
     exp_a18_denorm = db.command("explain", {"aggregate": "authentications", "pipeline": p_a18_denorm, "cursor": {}}, verbosity="executionStats")
     m_a18_denorm = get_explain_metrics(exp_a18_denorm)
-    _, t_a18_denorm = measure_execution("A18_DENORMALISE", lambda: list(db.authentications.aggregate(p_a18_denorm)), query_type="experiment", iterations=5)
+    _, t_a18_denorm = measure_execution("A18_DENORMALISE", lambda: a18_night_logins_by_department(db, "Finance"), query_type="experiment", iterations=5)
+    # Synchronisation exacte de A18 dans timings.csv avec la mesure dénormalisée de référence
+    record_timing("A18", "analytical", t_a18_denorm)
 
     # A18 Normalisée (jointure $lookup vers users)
     p_a18_lookup = [
