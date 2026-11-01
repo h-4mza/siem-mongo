@@ -5,3 +5,5 @@ __pycache__/
 results/*.tmp
 .venv/
 results/old_local/
+spark/.ivy2/
+results/

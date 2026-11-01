@@ -140,11 +140,48 @@ python queries/failover_test.py
 ```
 
 ### 9. Jobs Spark
-```bash
-spark-submit --packages org.mongodb.spark:mongo-spark-connector_2.12:10.x.x spark/spark_analysis.py
+
+L'infrastructure Spark est composée d'un **Spark Master** et de **deux Spark Workers**, connectés au même réseau Docker que le Replica Set MongoDB.
+
+#### Architecture Spark
+
+- Spark Master : `spark-master:7077`
+- Spark UI : `http://localhost:8080`
+- Worker 1 : 1 cœur, 1 Go de mémoire
+- Worker 2 : 1 cœur, 1 Go de mémoire
+- Version Apache Spark : `3.5.0`
+- MongoDB Spark Connector : `10.3.0`
+
+#### Vérification de la connexion Spark ↔ MongoDB
+
+Le script suivant permet de vérifier que Spark peut lire les collections MongoDB :
+
+```powershell
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/test_connection.py
 ```
 
+Le test valide les collections suivantes :
+
+| Collection | Nombre attendu |
+|---|---:|
+| users | 10 000 |
+| hosts | 2 000 |
+| authentications | 60 500 |
+| network_flows | 40 500 |
+| alerts | 3 200 |
+| ip_blacklist | 200 |
+
+Les deux workers peuvent être vérifiés depuis l'interface Spark :
+
+`http://localhost:8080`
+
 ### 10. Lancement du Dashboard
+
 ```bash
 streamlit run dashboard/app.py
 ```
