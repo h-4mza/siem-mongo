@@ -13,6 +13,7 @@ import uuid
 from datetime import datetime, timedelta, timezone
 from bson import ObjectId
 from pymongo import MongoClient, ASCENDING, DESCENDING
+from pymongo.write_concern import WriteConcern
 
 # Import de l'utilitaire de mesure de performance
 from timer import measure_execution, TIMINGS_FILE
@@ -50,7 +51,15 @@ def get_database():
 # ==============================================================================
 
 def t1_insert_authentication(db, doc: dict = None) -> str:
-    """T1 insérer une authentification"""
+    """
+    T1 insérer une authentification
+    Write Concern utilisé : w='majority' (comportement par défaut officiel de MongoDB 5.0+ sur Replica Set).
+    Note contextuelle :
+      - Mesure ponctuelle de démarrage (5 itérations, sans préchauffage dans transactional.py) : 22.63 ms
+        (inclut la découverte initiale de topologie SDAM, l'ouverture des sockets et le cache $jsonSchema).
+      - Mesure en régime stabilisé (200 itérations dans consistency_experiments.py) : 8.24 ms.
+    """
+    coll = db.get_collection("authentications", write_concern=WriteConcern(w="majority"))
     if doc is None:
         auth_id = f"auth_t1_{uuid.uuid4().hex[:8]}"
         doc = {
@@ -69,7 +78,7 @@ def t1_insert_authentication(db, doc: dict = None) -> str:
             },
             "user_department": "Finance"
         }
-    res = db.authentications.insert_one(doc)
+    res = coll.insert_one(doc)
     return str(res.inserted_id)
 
 

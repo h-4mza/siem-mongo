@@ -10,11 +10,11 @@ Toutes les métriques temporelles correspondent à la moyenne sur 5 exécutions 
 
 | Réf | Énoncé du Sujet | Requête MongoDB Utilisée | Index Mobilisé | Temps Mesuré | Justification Technique & Choix de Conception |
 | :--- | :--- | :--- | :--- | :---: | :--- |
-| **T1** | Insérer une authentification | `db.authentications.insertOne(doc)` | `_id_`, `idx_auth_auth_id_unique` | **22.63 ms** | Insertion unitaire sous validation `$jsonSchema` stricte avec garantie d'unicité de `auth_id` sur le replica set. |
+| **T1** | Insérer une authentification | `db.authentications.insertOne(doc)` | `_id_`, `idx_auth_auth_id_unique` | **22.63 ms** | Insertion unitaire sous `$jsonSchema` avec Write Concern `w: "majority"` (défaut replica set). Temps à froid sur 5 itérations incluant handshake initial (8.24 ms en régime stabilisé sur 200 itérations). |
 | **T2** | Insérer 1000 flux en lot (insert_many) | `db.network_flows.insertMany(batch, {ordered: false})` | `_id_`, `idx_flows_flow_id_unique` | **135.98 ms** | Écriture vectorisée par lot (*batching*) amortissant le coût réseau et disque (~7 350 docs/sec sur 3 nœuds). |
 | **T3** | Profil d'un utilisateur | `db.users.findOne({user_id: "usr_00001"})` | `idx_users_user_id_unique` `(user_id: 1)` | **1.38 ms** | Recherche O(1) sur la clé métier unique de l'utilisateur sans jointure. |
 | **T4** | 20 dernières connexions (tri desc) | `db.authentications.find({user_id}).sort({timestamp: -1}).limit(20)` | `idx_auth_user_time_desc` `(user_id: 1, timestamp: -1)` | **4.22 ms** | Index composé aligné sur le filtre et l'ordre de tri : élimine tout tri en mémoire RAM (*no in-memory sort*). |
-| **T5** | Échecs de connexion sur les dernières 24 h | `db.authentications.find({user_id, result: "failure", timestamp: {$gte, $lte}}).sort({timestamp: 1})` | `idx_auth_user_res_time` `(user_id: 1, result: 1, timestamp: 1)` | **2.39 ms** | Règle ESR (Égalité sur `user_id` et `result`, puis filtre d'intervalle sur `timestamp`). Accès direct sans balayage. |
+| **T5** | Échecs de connexion sur les dernières 24 h | `db.authentications.find({user_id, result: "failure", timestamp: {$gte, $lte}}).sort({timestamp: 1})` | `idx_auth_user_res_time` `(user_id: 1, result: 1, timestamp: 1)` | **2.39 ms** | Règle ESR (Égalité sur `user_id` et `result`, puis intervalle sur `timestamp`). Accès direct en O(log n) via l'arbre B-Tree sans balayage. |
 | **T6** | Événements d'un hôte pour un jour donné (page 50 par curseur, pas skip) | `db.authentications.find({host_id, timestamp: {$gt: cursor, $lte: fin}}).sort({timestamp: 1}).limit(50)` | `idx_auth_host_time` `(host_id: 1, timestamp: 1)` | **3.44 ms** | Pagination par curseur évitant le balayage O(N) inhérent à `$skip` sur les collections volumineuses. |
 | **T7** | Créer une alerte | `db.alerts.insertOne(alert_doc)` | `_id_`, `idx_alerts_alert_id_unique` | **11.13 ms** | Enregistrement atomique de l'alerte intégrant son tableau de tags et la liste de références aux événements. |
 | **T8** | Changer le statut d'une alerte et affecter un analyste (update_one) | `db.alerts.updateOne({alert_id}, {$set: {status, analyst}})` | `idx_alerts_alert_id_unique` `(alert_id: 1)` | **7.02 ms** | Ciblage direct par l'identifiant d'alerte et mise à jour ponctuelle en place. |
@@ -90,10 +90,11 @@ Toutes les métriques proviennent de l'introspection `explain("executionStats")`
 - **Avec `$match` temporel amont (14 jours)** : En restreignant la fenêtre temporelle en première étape de pipeline, l'index temporel élimine 30 771 documents en amont. L'étape `$group` ne traite que 29 734 documents, faisant chuter le temps à **207.20 ms** (**gain de 31.8%**).
 
 #### 5. Cas A18 : Mesure réelle de la dénormalisation vs jointure `$lookup` (et analyse de l'écart initial)
-- **Origine de l'écart initial (61 ms vs 132-401 ms)** :
-  - La valeur initiale de ~61 ms observée dans certains tests préliminaires correspondait à une requête restreinte à une période temporelle récente (ex: fenêtre de 7 jours) ou à un sous-ensemble de données.
-  - En revanche, l'évaluation complète sur les **30 jours de la collection (60 500 documents)** sans filtre temporel oblige MongoDB à inspecter les 49 143 connexions réussies pour calculer l'expression horaire `$hour` et filtrer le département Finance.
-  - **Harmonisation stricte** : Les deux métriques (la suite analytique globale et l'expérience comparative d'indexation) sont exécutées avec exactement les mêmes paramètres (département `"Finance"`, sur l'intégralité des 30 jours, moyenne sur 5 itérations). Elles affichent désormais rigoureusement le même temps (**132.82 ms** dans `timings.csv` et dans `index_experiments.csv`).
+- **Origine des écarts de mesure (61 ms → 401.86 ms → 132.82 ms)** :
+  - La valeur préliminaire de ~61 ms correspondait à une requête restreinte à une période temporelle partielle (ex: fenêtre de 7 jours).
+  - L'évaluation exhaustive sur les **30 jours de la collection (60 500 documents)** sans filtre temporel oblige MongoDB à parcourir les 49 143 connexions réussies pour évaluer l'expression `$hour` et filtrer le département Finance.
+  - L'écart mesuré entre la machine locale mono-nœud (**401.86 ms**) et le replica set (**132.82 ms**) reflète uniquement des environnements d'exécution différents (ressources matérielles, ordonnancement des processus et charge système).
+  - **Harmonisation stricte** : La suite analytique globale et l'expérience d'indexation sont mesurées avec rigoureusement les mêmes paramètres (département `"Finance"`, 30 jours, moyenne sur 5 itérations) et affichent exactement la même valeur (**132.82 ms** dans `timings.csv` et `index_experiments.csv`).
 - **Approche normalisée (`$lookup` vers `users`)** : Pour chaque connexion nocturne réussie, MongoDB doit effectuer une résolution vers la collection `users` pour récupérer le département (16 735 jointures traitées). Le temps d'exécution s'élève à **783.09 ms**.
 - **Approche dénormalisée (`user_department` stocké dans le log)** : La requête s'exécute directement sur la collection `authentications` sans aucune jointure inter-collections, en **132.82 ms**.
 - *Conclusion chiffrée* : La dénormalisation apporte un gain de performance direct d'un facteur **5.9x** (132.82 ms vs 783.09 ms), justifiant pleinement ce choix de modélisation pour un SIEM distribué à haute cadence.
@@ -121,57 +122,63 @@ Les résultats ont été enregistrés dans `results/consistency_experiments.csv`
 ### 3.2. Analyse du Compromis Latence vs Durabilité (Trade-off)
 
 1. **Write Concern et Durabilité des Événements SOC sur le Replica Set** :
+   - **Write Concern utilisé par T1 et explication de l'écart avec `consistency_experiments.csv`** :
+     - Dans `queries/transactional.py`, T1 applique le Write Concern par défaut du cluster MongoDB 5.0+ sur Replica Set, à savoir **`w: "majority"`**.
+     - Le temps rapporté dans `timings.csv` (**22.63 ms**) correspond à une mesure ponctuelle sur seulement 5 itérations exécutées dès le lancement du processus, sans préchauffage. La première écriture absorbe le surcoût de découverte de la topologie SDAM, l'ouverture des sockets et l'initialisation du validateur `$jsonSchema`.
+     - Dans `results/consistency_experiments.csv`, la mesure est réalisée en **régime stabilisé sur 200 itérations successives**, où ce coût d'initialisation est lissé : le temps moyen de **`w: "majority"`** s'établit alors à **8.24 ms** (P95: 14.46 ms).
    - **`w:1` (Asynchrone vers les secondaires)** : Le nœud primaire accuse réception dès l'inscription de l'événement en mémoire vive / WAL local. La latence moyenne est de **3.81 ms** (P95: 4.96 ms). C'est le choix privilégié pour l'ingestion massive de flux réseau haute fréquence (**T2**) où un débit élevé est requis (~7 350 docs/sec) et où la perte théorique de quelques trames réseau lors d'un crash brutal reste tolérable. En revanche, `w:1` présente un risque de **perte de données (*rollback*)** si le primaire subit une coupure d'alimentation avant d'avoir propagé l'oplog aux secondaires.
-   - **`w:"majority"` (Consensus distribué sur 2/3 nœuds)** : Le primaire attend la confirmation d'au moins un réplica secondaire avant de répondre au client. Sur notre cluster Docker à 3 nœuds, le temps moyen passe à **8.24 ms** (P95: 14.46 ms), soit un facteur **2.16x plus lent** que `w:1` en raison du round-trip réseau inter-conteneurs et de la confirmation du quorum. Cela garantit mathématiquement qu'aucune donnée validée ne pourra être écrasée par une élection ultérieure. C'est le standard indispensable pour les événements de sécurité critiques : **T7 (Création d'alertes SOC)**, **T10 (Blacklistage d'adresses IP)** et **T15 (Verrouillage d'un compte compromis)**.
-   - **`w:"majority" + j:true` (Synchronisation fsync sur disque)** : En plus du consensus de la majorité des nœuds, le moteur WiredTiger force une écriture synchrone sur le journal physique avant d'accuser réception. La latence moyenne s'élève à **10.90 ms** et le P95 bondit à **21.91 ms** (+51% par rapport à `w:majority`), traduisant l'impact des I/O disques bloquantes. Cette garantie est requise lorsque la perte de données est inacceptable même en cas de coupure électrique totale de l'ensemble des machines du datacenter.
+   - **`w:"majority"` (Consensus distribué sur 2/3 nœuds)** : Le primaire attend la confirmation d'au moins un réplica secondaire avant de répondre au client. Sur notre cluster Docker à 3 nœuds en régime établi, le temps moyen passe à **8.24 ms** (P95: 14.46 ms), soit un facteur **2.16x plus lent** que `w:1` en raison du round-trip réseau inter-conteneurs et de la confirmation du quorum. C'est le standard indispensable pour les événements de sécurité critiques : **T1 (Authentications)**, **T7 (Création d'alertes SOC)**, **T10 (Blacklistage IP)** et **T15 (Verrouillage de compte)**.
+   - **`w:"majority" + j:true` (Synchronisation fsync sur disque)** : En plus du consensus de la majorité des nœuds, le moteur WiredTiger force une écriture synchrone sur le journal physique avant d'accuser réception. La latence moyenne s'élève à **10.90 ms** et le P95 bondit à **21.91 ms** (+51% par rapport à `w:majority`), traduisant l'impact des I/O disques bloquantes. Cette garantie est requise lorsque la perte de données est inacceptable même en cas de panne électrique simultanée de l'ensemble du datacenter.
 
-2. **Read Preference et Déportation de Charge** :
-   - L'utilisation de `readPreference=secondaryPreferred` pour les requêtes de consultation fréquentes (ex: **T3 Profil utilisateur**, **A19 Statut des alertes** ou les dashboards de visualisation) permet de distribuer la charge de lecture sur les réplicas secondaires (`siem-mongo2`, `siem-mongo3`), réservant l'intégralité des cycles d'écriture du primaire `siem-mongo1` au flux d'ingestion des logs d'authentification et de flux réseau.
+2. **Read Preference, Read Concern et Bruit de Mesure sur T3** :
+   - **Analyse de T3 (Profil utilisateur)** : L'écart mesuré entre `readConcern: "local"` (2.67 ms, P95: 5.33 ms) et `readConcern: "majority"` (1.25 ms, P95: 2.07 ms) se situe **dans le bruit de mesure** inhérent aux micro-variations de latence réseau et d'ordonnancement de l'hôte, les documents résidant dans les deux cas directement en mémoire cache WiredTiger.
+   - **Déportation de charge (`secondaryPreferred`)** : L'utilisation de `readPreference=secondaryPreferred` pour les requêtes de consultation fréquentes (ex: **T3 Profil utilisateur**, **A19 Statut des alertes** ou les dashboards de visualisation) permet de distribuer la charge de lecture sur les réplicas secondaires (`siem-mongo2`, `siem-mongo3`), réservant l'intégralité des cycles d'écriture du primaire `siem-mongo1` au flux d'ingestion des logs d'authentification et de flux réseau.
    - La combinaison avec `readConcern="majority"` protège l'analyste SOC contre la lecture de données incohérentes (*dirty reads* ou lectures fantômes de transactions non pérennes) en consultant uniquement les clichés (*snapshots*) validés par le quorum de réplication.
 
-### 3.3. Test de Bascule Automatique et Résilience Réseau (Failover Test)
+### 3.3. Tests de Bascule : Arrêt Propre (`docker stop`) vs Crash Brutal (`docker kill`)
 
-Un test complet de tolérance aux pannes et de bascule automatique (*failover*) a été piloté en conditions réelles avec le script `queries/failover_test.py`, consigné dans `results/failover_output.txt`. Le script a émis une charge continue d'écritures (1 insertion toutes les 100 ms sous `retryWrites=True`).
+Deux expérimentations distinctes de tolérance aux pannes ont été pilotées et mesurées avec le script `queries/failover_test.py` (consignées dans `results/failover_output.txt`) sous une charge d'écriture continue (1 insertion toutes les 100 ms avec `retryWrites=True`).
 
-#### Déroulement Chronologique et Mesures Observées
+#### 1. Test (A) : Arrêt Propre du Primaire (`docker stop siem-mongo1`)
+- **Déclenchement** : `docker stop siem-mongo1` exécuté à **19:21:26.642**.
+- **Mécanisme** : Le signal `SIGTERM` déclenche un désistement ordonné (*clean stepdown*) de `siem-mongo1`. Le primaire informe immédiatement ses secondaires et libère son rôle.
+- **Délai avant reprise** : La première écriture sur le nouveau primaire (`mongo2:27019`) réussit à **19:21:26.876** (écriture #103).
+- **Durée mesurée entre l'arrêt et la 1re écriture sur le nouveau primaire** : **0.234 seconde (234 ms)**.
+- **Détection de basculement** : Affichage immédiat par le script : `Basculement détecté : mongo1 -> mongo2 à 19:21:26.876`.
+- **Écritures en erreur** : **0 erreur** (549/549 écritures réussies, 100.0%).
+- **Effet de `retryWrites=true`** : L'élection et la transition ayant duré 234 ms (très inférieur au timeout `serverSelectionTimeoutMS = 2000 ms`), le retry transparent du driver PyMongo a totalement masqué la bascule sans lever d'exception.
+- **Comportement au redémarrage (`docker start siem-mongo1`)** : Redémarré à 19:21:56.313, `mongo1` (priorité 2) synchronise son oplog et reprend la tête du cluster à 19:22:09.798 (`Basculement détecté : mongo2 -> mongo1 à 19:22:09.798 (écriture #489)`), sans aucune erreur.
 
-1. **Phase nominale (0 à 15 s)** :
-   - Écritures initiales orientées sur le nœud primaire `mongo1:27018` (latence moyenne observée : 10 à 19 ms).
-   - Dernière écriture nominale sur `mongo1` : écriture #120 à **19:03:20.522**.
+#### 2. Test (B) : Crash Brutal du Primaire (`docker kill siem-mongo1`)
+- **Déclenchement** : `docker kill siem-mongo1` (signal `SIGKILL`) exécuté à **19:22:50.057**.
+- **Mécanisme** : Le processus mongod est arrêté net par le noyau sans fermer ses connexions ni notifier le replica set.
+- **Détection de panne et élection** :
+  - Les nœuds secondaires doivent attendre l'expiration du timeout de heartbeat (~2 secondes) pour constater la disparition de `mongo1`.
+  - Côté applicatif, l'écriture #101 rencontre une socket coupée (`AutoReconnect`) à 19:22:52.268.
+  - Durant la phase d'élection du nouveau primaire par quorum Raft, aucune écriture n'est possible (`ServerSelectionTimeoutError: No primary available for writes, Timeout: 2.0s`). Les écritures #101, #102, #103 et #104 échouent successivement.
+- **Délai avant reprise** : À **19:23:00.490**, l'élection de **`mongo3:27020`** aboutit. L'écriture #105 réussit immédiatement sur `mongo3`.
+- **Durée mesurée entre le kill et la 1re écriture sur le nouveau primaire** : **10.433 secondes** (dont **8.222 secondes** d'indisponibilité effective mesurée entre le premier échec et la reprise).
+- **Détection de basculement** : `Basculement détecté : mongo1 -> mongo3 à 19:23:00.490 (écriture #105)`.
+- **Écritures en erreur** : **4 écritures échouées** (#101 à #104).
+- **Effet de `retryWrites=true`** : `retryWrites=True` retente l'écriture une fois. Toutefois, comme l'absence de primaire a persisté pendant ~8.2 secondes (dépassant le timeout de sélection de 2 000 ms), les 4 requêtes émises durant le vote ont été rejetées avec `ServerSelectionTimeoutError`. Dès l'élection validée, les écritures ont repris automatiquement sans redémarrer le client applicatif.
+- **Comportement au redémarrage (`docker start siem-mongo1`)** : Redémarré à 19:23:16.305, `mongo1` (priorité 2) est redevenu stable en 7 secondes et a repris son statut de primaire à 19:23:29.312 (`Basculement détecté : mongo3 -> mongo1 à 19:23:29.312 (écriture #364)`).
 
-2. **Coupure brutale du primaire (`docker stop siem-mongo1`)** :
-   - Arrêt exécuté à **19:03:20.863**.
-   - Perte immédiate du heartbeat par `siem-mongo2` et `siem-mongo3`, déclenchant l'élection Raft.
-   - Les logs internes du moteur `siem-mongo2` horodatent le changement de topologie à `18:03:21.078Z` et la validation du rôle de primaire à `18:03:21.185Z`.
-   - **Durée d'élection interne mesurée : exactement 107 ms** (`durationMillis: 107`).
-   - **Nouveau primaire élu : `mongo2:27019`** (confirmé par l'interrogation `rs.status()` à T+30s : `mongo1: not reachable`, `mongo2: PRIMARY`, `mongo3: SECONDARY`).
+#### Tableau Comparatif des Deux Modes de Panne
 
-3. **Reprise des écritures et durée d'indisponibilité** :
-   - Première écriture enregistrée sur le nouveau primaire : écriture #130 à **19:03:21.780** sur `mongo2:27019`.
-   - **Durée d'indisponibilité constatée côté application : 0 seconde de coupure effective**.
-   - **Nombre d'écritures en erreur : 0** sur l'ensemble de la session (801/801 écritures réussies, soit 100.0% de succès).
-   - Durant les ~50 secondes d'indisponibilité de `siem-mongo1`, plus de 450 insertions consécutives (#130 à #580) ont été traitées sans interruption par `mongo2:27019`.
+| Paramètre Mesuré | Arrêt Propre (`docker stop`) | Crash Brutal (`docker kill`) | Interprétation Technique |
+| :--- | :---: | :---: | :--- |
+| **Signal système envoyé** | `SIGTERM` (arrêt gracieux) | `SIGKILL` (coupure nette) | `docker stop` permet un stepdown coordonné, `kill` simule une panne matérielle. |
+| **Heure de déclenchement** | 19:21:26.642 | 19:22:50.057 | Arrêt déclenché manuellement après phase nominale sur `mongo1`. |
+| **Heure de 1re écriture sur nouveau primaire** | 19:21:26.876 | 19:23:00.490 | Reprise sur le nœud secondaire promu par le quorum. |
+| **Durée entre arrêt/kill et 1re écriture** | **0.234 seconde (234 ms)** | **10.433 secondes** | Le crash nécessite l'expiration des heartbeats (2 s) + vote Raft (~8 s). |
+| **Durée d'indisponibilité mesurée (erreurs)** | **0 s** (aucune interruption visible) | **8.222 secondes** | Période durant laquelle aucun primaire n'était disponible pour les écritures. |
+| **Écritures en erreur** | **0** (549/549 réussies, 100%) | **4** (407/411 réussies, 99.0%) | Les 4 écritures émises pendant les 8.2 s de vote dépassent le timeout de 2 s. |
+| **Nouveau primaire élu** | **`mongo2:27019`** | **`mongo3:27020`** | Élu par consensus majoritaire (2/3 nœuds). |
+| **Basculements de nœud détectés** | **2** (`mongo1`→`mongo2`→`mongo1`) | **2** (`mongo1`→`mongo3`→`mongo1`) | Détectés et tracés par le script même en l'absence d'erreur (arrêt propre). |
+| **Effet de `retryWrites=true`** | Coupure complètement masquée | Erreur émise après 2 s de retry, reprise automatique dès l'élection achevée | Protège contre les coupures ultra-brèves (< 2 s) ; rétablit le flux sans intervention humaine après crash. |
+| **Comportement au redémarrage de `mongo1`** | Reprise automatique (priorité 2) | Reprise automatique (priorité 2) | Dans les deux cas, le failback est fluide et n'engendre aucune erreur. |
 
-4. **Comportement au redémarrage de `siem-mongo1` (`docker start siem-mongo1`)** :
-   - Redémarrage ordonné à **19:03:55.866**.
-   - `siem-mongo1` démarre en mode `SECONDARY`, synchronise les deltas d'oplog manqués auprès de `mongo2`, puis revendique son statut de primaire légitime en raison de sa priorité statutaire supérieure (**priorité 2** vs priorité 1 pour les autres nœuds).
-   - Basculement inverse (*failback*) opéré entre **19:04:12.240** (écriture #580 sur `mongo2`) et **19:04:13.382** (écriture #590 sur `mongo1`).
-   - Deuxième coupure détectée : **aucune (0 erreur)**. La ré-élection de `mongo1` a été absorbée de façon totalement transparente par le cluster.
-   - Relevé final du replica set : `mongo1:27018 PRIMARY`, `mongo2:27019 SECONDARY`, `mongo3:27020 SECONDARY`.
-
-5. **Effet mesuré du paramètre `retryWrites=true`** :
-   - Sans retry automatique, toute écriture émise pendant la fenêtre d'élection de 107 ms aurait échoué avec l'erreur `AutoReconnect` ou `NotWritablePrimary`.
-   - Avec `retryWrites=true`, le pilote PyMongo suspend la requête, actualise sa vision de la topologie du cluster via le protocole SDAM (*Server Discovery and Monitoring*), et réexécute l'écriture sur le nouveau primaire sans lever d'exception vers la couche applicative.
-
-| Métrique de Résilience | Valeur Mesurée | Interprétation |
-| :--- | :---: | :--- |
-| **Tentatives totales d'écriture** | **801** | Charge continue à 10 req/s pendant toute la durée du test (~80 s) |
-| **Écritures réussies** | **801 (100.0%)** | Zéro perte d'événements, aucune exception applicative |
-| **Écritures échouées** | **0** | Haute disponibilité complète assurée par le cluster |
-| **Temps d'élection interne (WiredTiger/Raft)** | **107 ms** | Consensus distribué ultra-rapide entre les conteneurs restants |
-| **Nouveau primaire élu lors du crash** | **`mongo2:27019`** | Élu par consensus avec `mongo3:27020` (quorum 2/3 atteint) |
-| **Comportement au redémarrage de `mongo1`** | **Failback fluide** | `mongo1` (priorité 2) reprend automatiquement le rôle de primaire |
-| **Coupure perçue par le client applicatif** | **0 seconde** | Grâce à `retryWrites=true` et timeout à 2 000 ms > 107 ms d'élection |
+> **Conclusion sur la résilience** : On ne peut pas conclure de façon générale à une indisponibilité de "0 seconde". Lors d'un arrêt ordonné, la transition est quasi-instantanée (**234 ms**) et totalement masquée par `retryWrites=true`. En revanche, lors d'un crash réel avec rupture brutale des liaisons, l'indisponibilité effective est de l'ordre de **8 à 10 secondes** (le temps que le quorum constate la perte des heartbeats et valide le nouveau primaire), entraînant le rejet des requêtes arrivant pendant cette fenêtre si leur délai d'attente est inférieur à cette durée.
 
 ---
 

@@ -119,6 +119,8 @@ def main():
     outage_start_str = ""
     outage_fail_count = 0
     outage_events = []
+    node_switches = []
+    prev_node = None
 
     inserted_ids = []
 
@@ -131,6 +133,11 @@ def main():
         print(f" • Écritures réussies           : {total_success} ({(total_success / max(1, total_attempts) * 100):.1f}%)")
         print(f" • Écritures échouées           : {total_failures}")
         print(f" • Nombre de basculements (pannes) détectés : {len(outage_events)}")
+        print(f" • Nombre de basculements de nœud détectés : {len(node_switches)}")
+        if node_switches:
+            print("\n Détail des basculements de nœud :")
+            for idx, sw in enumerate(node_switches, 1):
+                print(f"   [{idx}] Basculement : {sw['from']} -> {sw['to']} à {sw['time']} (écriture #{sw['seq']})")
 
         if outage_events:
             print("\n Détail des basculements mesurés :")
@@ -187,6 +194,21 @@ def main():
             latency_ms = (time.perf_counter() - t_start) * 1000.0
             total_success += 1
             inserted_ids.append(res.inserted_id)
+
+            # Détection de basculement de nœud (changement de primaire répondant)
+            curr_primary = getattr(client, "primary", None) or client.address
+            curr_node = curr_primary[0] if isinstance(curr_primary, tuple) else str(curr_primary)
+
+            if prev_node is not None and curr_node != prev_node:
+                sw_time = now_str()
+                print(f"Basculement détecté : {prev_node} -> {curr_node} à {sw_time}")
+                node_switches.append({
+                    "from": prev_node,
+                    "to": curr_node,
+                    "time": sw_time,
+                    "seq": seq
+                })
+            prev_node = curr_node
 
             # Si on était en panne, on vient d'observer la REPRISE !
             if in_outage:

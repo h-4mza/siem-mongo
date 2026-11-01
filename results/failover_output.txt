@@ -1,3 +1,5 @@
+=== TEST (A) : ARRET PROPRE DU PRIMAIRE (docker stop siem-mongo1) ===
+
 =====================================================================================
        TEST DE BASCULEMENT AUTOMATIQUE (FAILOVER) - SIEM MONGODB REPLICA SET       
 =====================================================================================
@@ -14,100 +16,190 @@ Instructions :
  4. Appuyez sur Ctrl+C à tout moment pour terminer et afficher le bilan complet.
 =====================================================================================
 
-[*] Démarrage de la boucle d'écriture (Session ID : run_7b0c5d80)...
+[*] Démarrage de la boucle d'écriture (Session ID : run_74886299)...
 
-[19:03:07.020] [OK] Écriture #1     réussie | Latence: 18.38 ms | Nœud: ('mongo1', 27018)
-[19:03:08.045] [OK] Écriture #10    réussie | Latence: 19.17 ms | Nœud: ('mongo1', 27018)
-[19:03:09.185] [OK] Écriture #20    réussie | Latence: 15.33 ms | Nœud: ('mongo1', 27018)
-[19:03:10.303] [OK] Écriture #30    réussie | Latence: 10.73 ms | Nœud: ('mongo1', 27018)
-[19:03:11.448] [OK] Écriture #40    réussie | Latence: 14.24 ms | Nœud: ('mongo1', 27018)
-[19:03:12.574] [OK] Écriture #50    réussie | Latence: 10.52 ms | Nœud: ('mongo1', 27018)
-[19:03:13.688] [OK] Écriture #60    réussie | Latence: 12.29 ms | Nœud: ('mongo1', 27018)
-[19:03:14.808] [OK] Écriture #70    réussie | Latence: 15.71 ms | Nœud: ('mongo1', 27018)
-[19:03:15.918] [OK] Écriture #80    réussie | Latence: 12.35 ms | Nœud: ('mongo1', 27018)
-[19:03:17.046] [OK] Écriture #90    réussie | Latence: 14.32 ms | Nœud: ('mongo1', 27018)
-[19:03:18.195] [OK] Écriture #100   réussie | Latence: 12.66 ms | Nœud: ('mongo1', 27018)
-[19:03:19.377] [OK] Écriture #110   réussie | Latence: 10.13 ms | Nœud: ('mongo1', 27018)
-[19:03:20.522] [OK] Écriture #120   réussie | Latence: 11.19 ms | Nœud: ('mongo1', 27018)
-[19:03:21.780] [OK] Écriture #130   réussie | Latence: 13.88 ms | Nœud: ('mongo2', 27019)
-[19:03:22.935] [OK] Écriture #140   réussie | Latence: 12.83 ms | Nœud: ('mongo2', 27019)
-[19:03:24.063] [OK] Écriture #150   réussie | Latence: 12.53 ms | Nœud: ('mongo2', 27019)
-[19:03:25.441] [OK] Écriture #160   réussie | Latence: 10.62 ms | Nœud: ('mongo2', 27019)
-[19:03:26.589] [OK] Écriture #170   réussie | Latence: 12.67 ms | Nœud: ('mongo2', 27019)
-[19:03:27.683] [OK] Écriture #180   réussie | Latence:  7.93 ms | Nœud: ('mongo2', 27019)
-[19:03:28.796] [OK] Écriture #190   réussie | Latence: 12.95 ms | Nœud: ('mongo2', 27019)
-[19:03:29.909] [OK] Écriture #200   réussie | Latence: 16.45 ms | Nœud: ('mongo2', 27019)
-[19:03:31.078] [OK] Écriture #210   réussie | Latence: 15.51 ms | Nœud: ('mongo2', 27019)
-[19:03:32.215] [OK] Écriture #220   réussie | Latence: 10.14 ms | Nœud: ('mongo2', 27019)
-[19:03:33.332] [OK] Écriture #230   réussie | Latence: 10.57 ms | Nœud: ('mongo2', 27019)
-[19:03:34.422] [OK] Écriture #240   réussie | Latence:  5.48 ms | Nœud: ('mongo2', 27019)
-[19:03:35.516] [OK] Écriture #250   réussie | Latence: 11.80 ms | Nœud: ('mongo2', 27019)
-[19:03:36.630] [OK] Écriture #260   réussie | Latence: 10.34 ms | Nœud: ('mongo2', 27019)
-[19:03:37.730] [OK] Écriture #270   réussie | Latence:  8.49 ms | Nœud: ('mongo2', 27019)
-[19:03:38.824] [OK] Écriture #280   réussie | Latence: 10.32 ms | Nœud: ('mongo2', 27019)
-[19:03:39.938] [OK] Écriture #290   réussie | Latence:  8.48 ms | Nœud: ('mongo2', 27019)
-[19:03:41.029] [OK] Écriture #300   réussie | Latence: 10.86 ms | Nœud: ('mongo2', 27019)
-[19:03:42.142] [OK] Écriture #310   réussie | Latence: 10.50 ms | Nœud: ('mongo2', 27019)
-[19:03:43.266] [OK] Écriture #320   réussie | Latence:  6.79 ms | Nœud: ('mongo2', 27019)
-[19:03:44.362] [OK] Écriture #330   réussie | Latence:  5.61 ms | Nœud: ('mongo2', 27019)
-[19:03:45.455] [OK] Écriture #340   réussie | Latence:  8.47 ms | Nœud: ('mongo2', 27019)
-[19:03:46.552] [OK] Écriture #350   réussie | Latence:  8.28 ms | Nœud: ('mongo2', 27019)
-[19:03:47.666] [OK] Écriture #360   réussie | Latence:  9.75 ms | Nœud: ('mongo2', 27019)
-[19:03:48.766] [OK] Écriture #370   réussie | Latence: 10.08 ms | Nœud: ('mongo2', 27019)
-[19:03:49.879] [OK] Écriture #380   réussie | Latence: 10.30 ms | Nœud: ('mongo2', 27019)
-[19:03:50.988] [OK] Écriture #390   réussie | Latence: 10.56 ms | Nœud: ('mongo2', 27019)
-[19:03:52.074] [OK] Écriture #400   réussie | Latence:  6.53 ms | Nœud: ('mongo2', 27019)
-[19:03:53.171] [OK] Écriture #410   réussie | Latence: 12.74 ms | Nœud: ('mongo2', 27019)
-[19:03:54.269] [OK] Écriture #420   réussie | Latence:  5.70 ms | Nœud: ('mongo2', 27019)
-[19:03:55.358] [OK] Écriture #430   réussie | Latence:  9.85 ms | Nœud: ('mongo2', 27019)
-[19:03:56.435] [OK] Écriture #440   réussie | Latence: 11.21 ms | Nœud: ('mongo2', 27019)
-[19:03:57.548] [OK] Écriture #450   réussie | Latence: 13.25 ms | Nœud: ('mongo2', 27019)
-[19:03:58.980] [OK] Écriture #460   réussie | Latence: 235.00 ms | Nœud: ('mongo2', 27019)
-[19:04:00.128] [OK] Écriture #470   réussie | Latence: 14.65 ms | Nœud: ('mongo2', 27019)
-[19:04:01.252] [OK] Écriture #480   réussie | Latence: 10.23 ms | Nœud: ('mongo2', 27019)
-[19:04:02.349] [OK] Écriture #490   réussie | Latence: 11.32 ms | Nœud: ('mongo2', 27019)
-[19:04:03.452] [OK] Écriture #500   réussie | Latence:  6.39 ms | Nœud: ('mongo2', 27019)
-[19:04:04.557] [OK] Écriture #510   réussie | Latence:  6.78 ms | Nœud: ('mongo2', 27019)
-[19:04:05.639] [OK] Écriture #520   réussie | Latence:  9.71 ms | Nœud: ('mongo2', 27019)
-[19:04:06.767] [OK] Écriture #530   réussie | Latence: 11.78 ms | Nœud: ('mongo2', 27019)
-[19:04:07.864] [OK] Écriture #540   réussie | Latence:  7.87 ms | Nœud: ('mongo2', 27019)
-[19:04:08.962] [OK] Écriture #550   réussie | Latence:  6.19 ms | Nœud: ('mongo2', 27019)
-[19:04:10.045] [OK] Écriture #560   réussie | Latence: 11.03 ms | Nœud: ('mongo2', 27019)
-[19:04:11.147] [OK] Écriture #570   réussie | Latence:  8.40 ms | Nœud: ('mongo2', 27019)
-[19:04:12.240] [OK] Écriture #580   réussie | Latence:  6.32 ms | Nœud: ('mongo2', 27019)
-[19:04:13.382] [OK] Écriture #590   réussie | Latence: 14.13 ms | Nœud: ('mongo1', 27018)
-[19:04:14.486] [OK] Écriture #600   réussie | Latence:  7.27 ms | Nœud: ('mongo1', 27018)
-[19:04:15.606] [OK] Écriture #610   réussie | Latence: 12.82 ms | Nœud: ('mongo1', 27018)
-[19:04:16.744] [OK] Écriture #620   réussie | Latence:  9.67 ms | Nœud: ('mongo1', 27018)
-[19:04:17.951] [OK] Écriture #630   réussie | Latence: 38.75 ms | Nœud: ('mongo1', 27018)
-[19:04:19.084] [OK] Écriture #640   réussie | Latence: 11.88 ms | Nœud: ('mongo1', 27018)
-[19:04:20.183] [OK] Écriture #650   réussie | Latence:  6.93 ms | Nœud: ('mongo1', 27018)
-[19:04:21.298] [OK] Écriture #660   réussie | Latence: 10.68 ms | Nœud: ('mongo1', 27018)
-[19:04:22.429] [OK] Écriture #670   réussie | Latence:  9.32 ms | Nœud: ('mongo1', 27018)
-[19:04:23.546] [OK] Écriture #680   réussie | Latence:  9.96 ms | Nœud: ('mongo1', 27018)
-[19:04:24.658] [OK] Écriture #690   réussie | Latence:  5.70 ms | Nœud: ('mongo1', 27018)
-[19:04:25.755] [OK] Écriture #700   réussie | Latence: 15.80 ms | Nœud: ('mongo1', 27018)
-[19:04:26.870] [OK] Écriture #710   réussie | Latence: 11.98 ms | Nœud: ('mongo1', 27018)
-[19:04:27.955] [OK] Écriture #720   réussie | Latence:  7.56 ms | Nœud: ('mongo1', 27018)
-[19:04:29.075] [OK] Écriture #730   réussie | Latence: 10.74 ms | Nœud: ('mongo1', 27018)
-[19:04:30.187] [OK] Écriture #740   réussie | Latence:  6.18 ms | Nœud: ('mongo1', 27018)
-[19:04:31.278] [OK] Écriture #750   réussie | Latence: 10.40 ms | Nœud: ('mongo1', 27018)
-[19:04:32.384] [OK] Écriture #760   réussie | Latence:  7.13 ms | Nœud: ('mongo1', 27018)
-[19:04:33.494] [OK] Écriture #770   réussie | Latence:  6.28 ms | Nœud: ('mongo1', 27018)
-[19:04:34.600] [OK] Écriture #780   réussie | Latence: 13.66 ms | Nœud: ('mongo1', 27018)
-[19:04:35.715] [OK] Écriture #790   réussie | Latence:  9.90 ms | Nœud: ('mongo1', 27018)
-[19:04:36.792] [OK] Écriture #800   réussie | Latence:  6.52 ms | Nœud: ('mongo1', 27018)
+[19:21:15.633] [OK] Écriture #1     réussie | Latence: 18.96 ms | Nœud: ('mongo1', 27018)
+[19:21:16.639] [OK] Écriture #10    réussie | Latence: 11.68 ms | Nœud: ('mongo1', 27018)
+[19:21:17.746] [OK] Écriture #20    réussie | Latence: 10.97 ms | Nœud: ('mongo1', 27018)
+[19:21:18.823] [OK] Écriture #30    réussie | Latence:  6.90 ms | Nœud: ('mongo1', 27018)
+[19:21:19.915] [OK] Écriture #40    réussie | Latence:  6.07 ms | Nœud: ('mongo1', 27018)
+[19:21:21.034] [OK] Écriture #50    réussie | Latence:  6.55 ms | Nœud: ('mongo1', 27018)
+[19:21:22.146] [OK] Écriture #60    réussie | Latence: 10.50 ms | Nœud: ('mongo1', 27018)
+[19:21:23.244] [OK] Écriture #70    réussie | Latence: 10.55 ms | Nœud: ('mongo1', 27018)
+[19:21:24.363] [OK] Écriture #80    réussie | Latence:  6.71 ms | Nœud: ('mongo1', 27018)
+[19:21:25.459] [OK] Écriture #90    réussie | Latence:  5.67 ms | Nœud: ('mongo1', 27018)
+[19:21:26.536] [OK] Écriture #100   réussie | Latence:  8.82 ms | Nœud: ('mongo1', 27018)
+Basculement détecté : mongo1 -> mongo2 à 19:21:26.876
+[19:21:27.630] [OK] Écriture #110   réussie | Latence:  7.42 ms | Nœud: ('mongo2', 27019)
+[19:21:28.757] [OK] Écriture #120   réussie | Latence: 12.37 ms | Nœud: ('mongo2', 27019)
+[19:21:29.876] [OK] Écriture #130   réussie | Latence: 11.45 ms | Nœud: ('mongo2', 27019)
+[19:21:30.984] [OK] Écriture #140   réussie | Latence: 10.03 ms | Nœud: ('mongo2', 27019)
+[19:21:32.123] [OK] Écriture #150   réussie | Latence:  7.38 ms | Nœud: ('mongo2', 27019)
+[19:21:33.331] [OK] Écriture #160   réussie | Latence:  6.64 ms | Nœud: ('mongo2', 27019)
+[19:21:34.434] [OK] Écriture #170   réussie | Latence: 11.65 ms | Nœud: ('mongo2', 27019)
+[19:21:35.554] [OK] Écriture #180   réussie | Latence:  7.48 ms | Nœud: ('mongo2', 27019)
+[19:21:36.675] [OK] Écriture #190   réussie | Latence: 10.62 ms | Nœud: ('mongo2', 27019)
+[19:21:37.764] [OK] Écriture #200   réussie | Latence:  8.06 ms | Nœud: ('mongo2', 27019)
+[19:21:38.892] [OK] Écriture #210   réussie | Latence: 11.58 ms | Nœud: ('mongo2', 27019)
+[19:21:40.014] [OK] Écriture #220   réussie | Latence: 10.01 ms | Nœud: ('mongo2', 27019)
+[19:21:41.129] [OK] Écriture #230   réussie | Latence:  9.18 ms | Nœud: ('mongo2', 27019)
+[19:21:42.280] [OK] Écriture #240   réussie | Latence:  7.51 ms | Nœud: ('mongo2', 27019)
+[19:21:43.378] [OK] Écriture #250   réussie | Latence:  6.82 ms | Nœud: ('mongo2', 27019)
+[19:21:44.479] [OK] Écriture #260   réussie | Latence:  7.70 ms | Nœud: ('mongo2', 27019)
+[19:21:45.566] [OK] Écriture #270   réussie | Latence:  8.02 ms | Nœud: ('mongo2', 27019)
+[19:21:46.664] [OK] Écriture #280   réussie | Latence: 10.47 ms | Nœud: ('mongo2', 27019)
+[19:21:47.808] [OK] Écriture #290   réussie | Latence: 15.37 ms | Nœud: ('mongo2', 27019)
+[19:21:48.903] [OK] Écriture #300   réussie | Latence:  6.56 ms | Nœud: ('mongo2', 27019)
+[19:21:50.013] [OK] Écriture #310   réussie | Latence:  9.10 ms | Nœud: ('mongo2', 27019)
+[19:21:51.141] [OK] Écriture #320   réussie | Latence:  9.03 ms | Nœud: ('mongo2', 27019)
+[19:21:52.286] [OK] Écriture #330   réussie | Latence: 11.40 ms | Nœud: ('mongo2', 27019)
+[19:21:53.399] [OK] Écriture #340   réussie | Latence:  6.26 ms | Nœud: ('mongo2', 27019)
+[19:21:54.487] [OK] Écriture #350   réussie | Latence:  5.34 ms | Nœud: ('mongo2', 27019)
+[19:21:55.589] [OK] Écriture #360   réussie | Latence:  9.04 ms | Nœud: ('mongo2', 27019)
+[19:21:56.677] [OK] Écriture #370   réussie | Latence:  7.32 ms | Nœud: ('mongo2', 27019)
+[19:21:57.754] [OK] Écriture #380   réussie | Latence:  6.59 ms | Nœud: ('mongo2', 27019)
+[19:21:58.864] [OK] Écriture #390   réussie | Latence:  8.23 ms | Nœud: ('mongo2', 27019)
+[19:21:59.968] [OK] Écriture #400   réussie | Latence:  8.06 ms | Nœud: ('mongo2', 27019)
+[19:22:01.065] [OK] Écriture #410   réussie | Latence:  8.39 ms | Nœud: ('mongo2', 27019)
+[19:22:02.177] [OK] Écriture #420   réussie | Latence:  9.65 ms | Nœud: ('mongo2', 27019)
+[19:22:03.284] [OK] Écriture #430   réussie | Latence: 11.42 ms | Nœud: ('mongo2', 27019)
+[19:22:04.382] [OK] Écriture #440   réussie | Latence:  5.34 ms | Nœud: ('mongo2', 27019)
+[19:22:05.500] [OK] Écriture #450   réussie | Latence: 13.27 ms | Nœud: ('mongo2', 27019)
+[19:22:06.590] [OK] Écriture #460   réussie | Latence:  7.21 ms | Nœud: ('mongo2', 27019)
+[19:22:07.691] [OK] Écriture #470   réussie | Latence:  6.59 ms | Nœud: ('mongo2', 27019)
+[19:22:08.801] [OK] Écriture #480   réussie | Latence: 10.71 ms | Nœud: ('mongo2', 27019)
+Basculement détecté : mongo2 -> mongo1 à 19:22:09.798
+[19:22:09.908] [OK] Écriture #490   réussie | Latence:  8.90 ms | Nœud: ('mongo1', 27018)
+[19:22:11.038] [OK] Écriture #500   réussie | Latence:  8.40 ms | Nœud: ('mongo1', 27018)
+[19:22:12.145] [OK] Écriture #510   réussie | Latence: 12.41 ms | Nœud: ('mongo1', 27018)
+[19:22:13.254] [OK] Écriture #520   réussie | Latence:  4.88 ms | Nœud: ('mongo1', 27018)
+[19:22:14.356] [OK] Écriture #530   réussie | Latence: 10.37 ms | Nœud: ('mongo1', 27018)
+[19:22:15.468] [OK] Écriture #540   réussie | Latence: 12.88 ms | Nœud: ('mongo1', 27018)
 
 
 =====================================================================================
                    BILAN FINAL DU TEST DE FAILOVER                    
 =====================================================================================
- • Tentatives totales d'écriture : 801
- • Écritures réussies           : 801 (100.0%)
+ • Tentatives totales d'écriture : 549
+ • Écritures réussies           : 549 (100.0%)
  • Écritures échouées           : 0
  • Nombre de basculements (pannes) détectés : 0
+ • Nombre de basculements de nœud détectés : 2
+
+ Détail des basculements de nœud :
+   [1] Basculement : mongo1 -> mongo2 à 19:21:26.876 (écriture #103)
+   [2] Basculement : mongo2 -> mongo1 à 19:22:09.798 (écriture #489)
 
  [i] Aucun basculement / interruption détecté pendant cette session.
 
- [i] Nettoyage : 801 documents de test purgés.
+ [i] Nettoyage : 549 documents de test purgés.
+=====================================================================================
+
+
+=====================================================================================
+=== TEST (B) : CRASH BRUTAL DU PRIMAIRE (docker kill siem-mongo1) ===
+
+=====================================================================================
+       TEST DE BASCULEMENT AUTOMATIQUE (FAILOVER) - SIEM MONGODB REPLICA SET       
+=====================================================================================
+ • URI de connexion           : mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0&retryWrites=true
+ • Fréquence d'écriture       : 1 insertion toutes les 100 ms
+ • Server Selection Timeout   : 2000 ms
+ • retryWrites activé         : OUI (retryWrites=True)
+ • Collection cible           : siem.failover_heartbeat
+-------------------------------------------------------------------------------------
+Instructions :
+ 1. Laissez ce script tourner pour observer le flux normal d'écritures.
+ 2. Dans un autre terminal, stoppez le primaire (ex: docker stop siem-mongo1).
+ 3. Observez l'heure d'apparition des erreurs, l'élection et l'heure de reprise.
+ 4. Appuyez sur Ctrl+C à tout moment pour terminer et afficher le bilan complet.
+=====================================================================================
+
+[*] Démarrage de la boucle d'écriture (Session ID : run_ed4ccfc5)...
+
+[19:22:39.018] [OK] Écriture #1     réussie | Latence: 16.61 ms | Nœud: ('mongo1', 27018)
+[19:22:40.010] [OK] Écriture #10    réussie | Latence:  7.79 ms | Nœud: ('mongo1', 27018)
+[19:22:41.124] [OK] Écriture #20    réussie | Latence:  6.23 ms | Nœud: ('mongo1', 27018)
+[19:22:42.257] [OK] Écriture #30    réussie | Latence: 10.03 ms | Nœud: ('mongo1', 27018)
+[19:22:43.376] [OK] Écriture #40    réussie | Latence:  8.24 ms | Nœud: ('mongo1', 27018)
+[19:22:44.489] [OK] Écriture #50    réussie | Latence:  7.81 ms | Nœud: ('mongo1', 27018)
+[19:22:45.642] [OK] Écriture #60    réussie | Latence: 12.61 ms | Nœud: ('mongo1', 27018)
+[19:22:46.769] [OK] Écriture #70    réussie | Latence: 12.15 ms | Nœud: ('mongo1', 27018)
+[19:22:47.877] [OK] Écriture #80    réussie | Latence:  6.93 ms | Nœud: ('mongo1', 27018)
+[19:22:48.992] [OK] Écriture #90    réussie | Latence: 12.53 ms | Nœud: ('mongo1', 27018)
+[19:22:50.098] [OK] Écriture #100   réussie | Latence:  7.23 ms | Nœud: ('mongo1', 27018)
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[19:22:52.268] [DÉBUT DE PANNE / ÉLECTION] Échec de l'écriture #101 !
+  • Erreur initiale : AutoReconnect - mongo1:27018: connection closed (configured timeouts: socketTimeoutMS: 2000.0ms, connectTimeoutMS: 2000.0ms)
+  • Le cluster MongoDB est en cours d'élection de primaire...
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[19:22:54.789] [EN PANNE #2  ] Écriture #102 refusée (ServerSelectionTimeoutError : No primary available for writes, Timeout: 2.0s, Topology Des...)
+[19:22:57.302] [EN PANNE #3  ] Écriture #103 refusée (ServerSelectionTimeoutError : No primary available for writes, Timeout: 2.0s, Topology Des...)
+[19:22:59.523] [EN PANNE #4  ] Écriture #104 refusée (ServerSelectionTimeoutError : No primary available for writes, Timeout: 2.0s, Topology Des...)
+Basculement détecté : mongo1 -> mongo3 à 19:23:00.490
+
+#####################################################################################
+[19:23:00.490] >>> REPRISE CONFIRMÉE : NOUVEAU PRIMAIRE OPÉRATIONNEL ! <<<
+#####################################################################################
+  • Début de la coupure     : 19:22:52.268
+  • Heure de reprise        : 19:23:00.490
+  • DURÉE D'INDISPONIBILITÉ : 8.222 secondes
+  • Requêtes bloquées/échec : 4
+  • Nouveau primaire actif  : ('mongo3', 27020)
+#####################################################################################
+
+[19:23:01.048] [OK] Écriture #110   réussie | Latence:  6.89 ms | Nœud: ('mongo3', 27020)
+[19:23:02.178] [OK] Écriture #120   réussie | Latence: 14.14 ms | Nœud: ('mongo3', 27020)
+[19:23:03.279] [OK] Écriture #130   réussie | Latence: 14.05 ms | Nœud: ('mongo3', 27020)
+[19:23:04.383] [OK] Écriture #140   réussie | Latence:  8.10 ms | Nœud: ('mongo3', 27020)
+[19:23:05.479] [OK] Écriture #150   réussie | Latence:  9.81 ms | Nœud: ('mongo3', 27020)
+[19:23:06.592] [OK] Écriture #160   réussie | Latence:  9.49 ms | Nœud: ('mongo3', 27020)
+[19:23:07.756] [OK] Écriture #170   réussie | Latence: 11.09 ms | Nœud: ('mongo3', 27020)
+[19:23:08.847] [OK] Écriture #180   réussie | Latence: 11.97 ms | Nœud: ('mongo3', 27020)
+[19:23:09.979] [OK] Écriture #190   réussie | Latence:  8.21 ms | Nœud: ('mongo3', 27020)
+[19:23:11.085] [OK] Écriture #200   réussie | Latence: 10.38 ms | Nœud: ('mongo3', 27020)
+[19:23:12.210] [OK] Écriture #210   réussie | Latence: 14.78 ms | Nœud: ('mongo3', 27020)
+[19:23:13.359] [OK] Écriture #220   réussie | Latence: 12.84 ms | Nœud: ('mongo3', 27020)
+[19:23:14.467] [OK] Écriture #230   réussie | Latence:  7.25 ms | Nœud: ('mongo3', 27020)
+[19:23:15.590] [OK] Écriture #240   réussie | Latence: 11.15 ms | Nœud: ('mongo3', 27020)
+[19:23:16.671] [OK] Écriture #250   réussie | Latence:  6.15 ms | Nœud: ('mongo3', 27020)
+[19:23:17.817] [OK] Écriture #260   réussie | Latence:  5.95 ms | Nœud: ('mongo3', 27020)
+[19:23:18.902] [OK] Écriture #270   réussie | Latence: 10.93 ms | Nœud: ('mongo3', 27020)
+[19:23:20.032] [OK] Écriture #280   réussie | Latence: 20.10 ms | Nœud: ('mongo3', 27020)
+[19:23:21.136] [OK] Écriture #290   réussie | Latence: 10.21 ms | Nœud: ('mongo3', 27020)
+[19:23:22.251] [OK] Écriture #300   réussie | Latence:  9.18 ms | Nœud: ('mongo3', 27020)
+[19:23:23.369] [OK] Écriture #310   réussie | Latence: 13.32 ms | Nœud: ('mongo3', 27020)
+[19:23:24.469] [OK] Écriture #320   réussie | Latence:  7.13 ms | Nœud: ('mongo3', 27020)
+[19:23:25.562] [OK] Écriture #330   réussie | Latence:  5.26 ms | Nœud: ('mongo3', 27020)
+[19:23:26.672] [OK] Écriture #340   réussie | Latence: 11.66 ms | Nœud: ('mongo3', 27020)
+[19:23:27.760] [OK] Écriture #350   réussie | Latence:  5.13 ms | Nœud: ('mongo3', 27020)
+[19:23:28.858] [OK] Écriture #360   réussie | Latence:  6.99 ms | Nœud: ('mongo3', 27020)
+Basculement détecté : mongo3 -> mongo1 à 19:23:29.312
+[19:23:29.986] [OK] Écriture #370   réussie | Latence: 10.28 ms | Nœud: ('mongo1', 27018)
+[19:23:31.109] [OK] Écriture #380   réussie | Latence: 12.54 ms | Nœud: ('mongo1', 27018)
+[19:23:32.241] [OK] Écriture #390   réussie | Latence: 11.39 ms | Nœud: ('mongo1', 27018)
+[19:23:33.355] [OK] Écriture #400   réussie | Latence:  7.79 ms | Nœud: ('mongo1', 27018)
+[19:23:34.471] [OK] Écriture #410   réussie | Latence: 12.90 ms | Nœud: ('mongo1', 27018)
+
+
+=====================================================================================
+                   BILAN FINAL DU TEST DE FAILOVER                    
+=====================================================================================
+ • Tentatives totales d'écriture : 411
+ • Écritures réussies           : 407 (99.0%)
+ • Écritures échouées           : 4
+ • Nombre de basculements (pannes) détectés : 1
+ • Nombre de basculements de nœud détectés : 2
+
+ Détail des basculements de nœud :
+   [1] Basculement : mongo1 -> mongo3 à 19:23:00.490 (écriture #105)
+   [2] Basculement : mongo3 -> mongo1 à 19:23:29.312 (écriture #364)
+
+ Détail des basculements mesurés :
+   [1] Début: 19:22:52.268 | Reprise: 19:23:00.490 | Durée: 8.222 s | Échecs: 4
+
+ >>> Durée moyenne d'indisponibilité : 8.222 secondes <<<
+
+ [i] Nettoyage : 407 documents de test purgés.
 =====================================================================================
