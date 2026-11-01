@@ -4,3 +4,4 @@ __pycache__/
 .env
 results/*.tmp
 .venv/
+results/old_local/

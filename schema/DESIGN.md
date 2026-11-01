@@ -93,9 +93,9 @@ db.authentications.aggregate([
 
 | Critère | Approche Normalisée avec `$lookup` | Approche Retenue (Dénormalisation) |
 | :--- | :--- | :--- |
-| **Temps d'exécution mesuré** | **5 097.19 ms** (~5,1 secondes) | **401.86 ms** (**12.7x plus rapide**) |
+| **Temps d'exécution mesuré** | **783.09 ms** | **132.82 ms** (**5.9x plus rapide**) |
 | **Complexité de la requête** | Nécessite une étape `$lookup` qui effectue des milliers de résolutions croisées entre la collection `authentications` et `users`. | Pipeline d'agrégation direct sur la seule collection `authentications`. |
-| **Documents traités en mémoire** | 16 847 documents retournés et croisés avec la collection `users`. | 870 documents filtrés et agrégés directement en streaming. |
+| **Documents traités en mémoire** | 16 735 documents retournés et croisés avec la collection `users`. | 1 779 documents filtrés et agrégés directement en streaming. |
 | **Distribution & Scalabilité** | Dans un cluster shardt/replica set ou un cluster Spark distribué, les `$lookup` nécessitent des transferts réseau importants entre partitions. | Aucun échange inter-collections nécessaire. Chaque partition Spark peut traiter ses événements localement. |
 | **Impact sur l'écriture** | Aucun. | Minime : copie d'une chaîne courte (~10 octets) lors de l'insertion de l'événement. |
 | **Cohérence des données d'audit** | En cas de changement de département, le log reflèterait le *nouveau* département au lieu de la situation historique. | Parfaite : l'événement de journalisation consigne fidèlement le département de l'utilisateur **au moment exact** où l'accès a eu lieu. |
