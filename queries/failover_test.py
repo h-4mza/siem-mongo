@@ -159,6 +159,17 @@ def main():
 
     seq = 0
     while True:
+        stop_file = Path("results/stop_failover.flag")
+        if stop_file.exists() or Path("stop_failover.flag").exists():
+            try:
+                if stop_file.exists():
+                    stop_file.unlink()
+                if Path("stop_failover.flag").exists():
+                    Path("stop_failover.flag").unlink()
+            except Exception:
+                pass
+            handle_exit()
+
         seq += 1
         total_attempts += 1
         t_start = time.perf_counter()

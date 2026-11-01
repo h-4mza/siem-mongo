@@ -129,12 +129,49 @@ Les résultats ont été enregistrés dans `results/consistency_experiments.csv`
    - L'utilisation de `readPreference=secondaryPreferred` pour les requêtes de consultation fréquentes (ex: **T3 Profil utilisateur**, **A19 Statut des alertes** ou les dashboards de visualisation) permet de distribuer la charge de lecture sur les réplicas secondaires (`siem-mongo2`, `siem-mongo3`), réservant l'intégralité des cycles d'écriture du primaire `siem-mongo1` au flux d'ingestion des logs d'authentification et de flux réseau.
    - La combinaison avec `readConcern="majority"` protège l'analyste SOC contre la lecture de données incohérentes (*dirty reads* ou lectures fantômes de transactions non pérennes) en consultant uniquement les clichés (*snapshots*) validés par le quorum de réplication.
 
-### 3.3. Résilience et Basculement Haute Disponibilité (`failover_test.py`)
+### 3.3. Test de Bascule Automatique et Résilience Réseau (Failover Test)
 
-Le script `failover_test.py` teste la continuité de service lors de l'arrêt inopiné du conteneur primaire (`docker stop siem-mongo1`) :
-- **Comportement en élection** : Lorsque le primaire disparaît, les nœuds secondaires restants détectent la perte de heartbeat (au bout de ~2 secondes) et déclenchent une élection via l'algorithme de consensus Raft.
-- **Durée d'indisponibilité** : Durant la phase de transition (généralement comprise entre 2 et 8 secondes selon la configuration `electionTimeoutMillis`), aucune écriture ne peut être acceptée par le cluster (`NotWritablePrimary` ou `ServerSelectionTimeoutError`).
-- **Rôle critique de `retryWrites=true`** : Le paramètre `retryWrites=true` permet au pilote PyMongo de gérer de manière transparente les échecs d'écriture transitoires : le pilote réessaie automatiquement l'opération dès que le nouveau primaire a été élu et découvert, évitant ainsi le rejet de requêtes applicatives si la coupure est très brève.
+Un test complet de tolérance aux pannes et de bascule automatique (*failover*) a été piloté en conditions réelles avec le script `queries/failover_test.py`, consigné dans `results/failover_output.txt`. Le script a émis une charge continue d'écritures (1 insertion toutes les 100 ms sous `retryWrites=True`).
+
+#### Déroulement Chronologique et Mesures Observées
+
+1. **Phase nominale (0 à 15 s)** :
+   - Écritures initiales orientées sur le nœud primaire `mongo1:27018` (latence moyenne observée : 10 à 19 ms).
+   - Dernière écriture nominale sur `mongo1` : écriture #120 à **19:03:20.522**.
+
+2. **Coupure brutale du primaire (`docker stop siem-mongo1`)** :
+   - Arrêt exécuté à **19:03:20.863**.
+   - Perte immédiate du heartbeat par `siem-mongo2` et `siem-mongo3`, déclenchant l'élection Raft.
+   - Les logs internes du moteur `siem-mongo2` horodatent le changement de topologie à `18:03:21.078Z` et la validation du rôle de primaire à `18:03:21.185Z`.
+   - **Durée d'élection interne mesurée : exactement 107 ms** (`durationMillis: 107`).
+   - **Nouveau primaire élu : `mongo2:27019`** (confirmé par l'interrogation `rs.status()` à T+30s : `mongo1: not reachable`, `mongo2: PRIMARY`, `mongo3: SECONDARY`).
+
+3. **Reprise des écritures et durée d'indisponibilité** :
+   - Première écriture enregistrée sur le nouveau primaire : écriture #130 à **19:03:21.780** sur `mongo2:27019`.
+   - **Durée d'indisponibilité constatée côté application : 0 seconde de coupure effective**.
+   - **Nombre d'écritures en erreur : 0** sur l'ensemble de la session (801/801 écritures réussies, soit 100.0% de succès).
+   - Durant les ~50 secondes d'indisponibilité de `siem-mongo1`, plus de 450 insertions consécutives (#130 à #580) ont été traitées sans interruption par `mongo2:27019`.
+
+4. **Comportement au redémarrage de `siem-mongo1` (`docker start siem-mongo1`)** :
+   - Redémarrage ordonné à **19:03:55.866**.
+   - `siem-mongo1` démarre en mode `SECONDARY`, synchronise les deltas d'oplog manqués auprès de `mongo2`, puis revendique son statut de primaire légitime en raison de sa priorité statutaire supérieure (**priorité 2** vs priorité 1 pour les autres nœuds).
+   - Basculement inverse (*failback*) opéré entre **19:04:12.240** (écriture #580 sur `mongo2`) et **19:04:13.382** (écriture #590 sur `mongo1`).
+   - Deuxième coupure détectée : **aucune (0 erreur)**. La ré-élection de `mongo1` a été absorbée de façon totalement transparente par le cluster.
+   - Relevé final du replica set : `mongo1:27018 PRIMARY`, `mongo2:27019 SECONDARY`, `mongo3:27020 SECONDARY`.
+
+5. **Effet mesuré du paramètre `retryWrites=true`** :
+   - Sans retry automatique, toute écriture émise pendant la fenêtre d'élection de 107 ms aurait échoué avec l'erreur `AutoReconnect` ou `NotWritablePrimary`.
+   - Avec `retryWrites=true`, le pilote PyMongo suspend la requête, actualise sa vision de la topologie du cluster via le protocole SDAM (*Server Discovery and Monitoring*), et réexécute l'écriture sur le nouveau primaire sans lever d'exception vers la couche applicative.
+
+| Métrique de Résilience | Valeur Mesurée | Interprétation |
+| :--- | :---: | :--- |
+| **Tentatives totales d'écriture** | **801** | Charge continue à 10 req/s pendant toute la durée du test (~80 s) |
+| **Écritures réussies** | **801 (100.0%)** | Zéro perte d'événements, aucune exception applicative |
+| **Écritures échouées** | **0** | Haute disponibilité complète assurée par le cluster |
+| **Temps d'élection interne (WiredTiger/Raft)** | **107 ms** | Consensus distribué ultra-rapide entre les conteneurs restants |
+| **Nouveau primaire élu lors du crash** | **`mongo2:27019`** | Élu par consensus avec `mongo3:27020` (quorum 2/3 atteint) |
+| **Comportement au redémarrage de `mongo1`** | **Failback fluide** | `mongo1` (priorité 2) reprend automatiquement le rôle de primaire |
+| **Coupure perçue par le client applicatif** | **0 seconde** | Grâce à `retryWrites=true` et timeout à 2 000 ms > 107 ms d'élection |
 
 ---
 
