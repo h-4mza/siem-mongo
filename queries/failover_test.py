@@ -4,13 +4,13 @@ Test de basculement automatique (Failover) sur MongoDB Replica Set
 Ce script simule une charge applicative continue d'écriture à haute fréquence :
 - Lance 1 insertion toutes les 100 ms avec retryWrites=True
 - Affiche l'horodatage précis de chaque succès et de chaque erreur
-- Détecte l'arrêt du nœud primaire (ex: via 'docker stop <primary>')
+- Détecte l'arrêt du nœud primaire (ex: via 'docker stop siem-mongo1')
 - Mesure avec précision la durée d'indisponibilité jusqu'à l'élection d'un nouveau primaire
 - Détecte et affiche la reprise des écritures et l'adresse du nouveau primaire
 
 Utilisation :
     python queries/failover_test.py
-    (Puis dans un autre terminal : docker stop <nom_du_container_mongo_primaire>)
+    (Puis dans un autre terminal : docker stop siem-mongo1)
 """
 
 import argparse
@@ -70,7 +70,7 @@ def main():
     print("-" * 85)
     print("Instructions :")
     print(" 1. Laissez ce script tourner pour observer le flux normal d'écritures.")
-    print(" 2. Dans un autre terminal, stoppez le primaire (ex: docker stop mongo1).")
+    print(" 2. Dans un autre terminal, stoppez le primaire (ex: docker stop siem-mongo1).")
     print(" 3. Observez l'heure d'apparition des erreurs, l'élection et l'heure de reprise.")
     print(" 4. Appuyez sur Ctrl+C à tout moment pour terminer et afficher le bilan complet.")
     print("=" * 85 + "\n")

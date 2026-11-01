@@ -21,7 +21,7 @@ URI par défaut : mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=r
 
 ```text
 siem-mongo/
-├── docker-compose.yml        # Déploiement de l'infrastructure (MongoDB RS + Spark) - Géré par l'équipier
+├── docker-compose.yml        # Cluster MongoDB RS (3 nœuds) + Spark (1 master, 2 workers)
 ├── requirements.txt          # Dépendances Python du projet
 ├── README.md                 # Guide de déploiement et d'utilisation
 ├── data_generator/           # Scripts de génération et d'ingestion de logs de sécurité (Faker)
@@ -68,22 +68,24 @@ pip install -r requirements.txt
 
 La connexion à la base de données s'effectue via la variable d'environnement `MONGO_URI`.
 
-- **Valeur par défaut** : `mongodb://localhost:27017/?replicaSet=rs0`
+- **Valeur par défaut** : `mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0`
 - **Nom de la base de données** : `siem`
+
+> **Note** : Prérequis par PC : ajouter 127.0.0.1 mongo1 mongo2 mongo3 au fichier hosts (admin).
 
 ### Définir la variable d'environnement (optionnel) :
 
 - **Linux / macOS :**
   ```bash
-  export MONGO_URI="mongodb://localhost:27017/?replicaSet=rs0"
+  export MONGO_URI="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0"
   ```
 - **Windows (PowerShell) :**
   ```powershell
-  $env:MONGO_URI = "mongodb://localhost:27017/?replicaSet=rs0"
+  $env:MONGO_URI = "mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0"
   ```
 - **Windows (CMD) :**
   ```cmd
-  set MONGO_URI=mongodb://localhost:27017/?replicaSet=rs0
+  set MONGO_URI=mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0
   ```
 
 ---
@@ -133,7 +135,7 @@ python queries/consistency_experiment.py
 python queries/failover_test.py
 
 # Pour tester le basculement : dans un autre terminal, stoppez le primaire Docker :
-# docker stop <nom_du_container_mongo_primaire>
+# docker stop siem-mongo1
 # Le script affichera la détection d'erreur, l'élection et la reprise avec la durée exacte d'indisponibilité.
 ```
 

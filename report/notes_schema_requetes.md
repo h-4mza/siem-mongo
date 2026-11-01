@@ -130,7 +130,7 @@ Les résultats ont été enregistrés dans `results/consistency_experiments.csv`
 
 ### 3.3. Résilience et Basculement Haute Disponibilité (`failover_test.py`)
 
-Le script `failover_test.py` teste la continuité de service lors de l'arrêt inopiné du conteneur primaire (`docker stop mongo1`) :
+Le script `failover_test.py` teste la continuité de service lors de l'arrêt inopiné du conteneur primaire (`docker stop siem-mongo1`) :
 - **Comportement en élection** : Lorsque le primaire disparaît, les nœuds secondaires restants détectent la perte de heartbeat (au bout de ~2 secondes) et déclenchent une élection via l'algorithme de consensus Raft.
 - **Durée d'indisponibilité** : Durant la phase de transition (généralement comprise entre 2 et 8 secondes selon la configuration `electionTimeoutMillis`), aucune écriture ne peut être acceptée par le cluster (`NotWritablePrimary` ou `ServerSelectionTimeoutError`).
 - **Rôle critique de `retryWrites=true`** : Le paramètre `retryWrites=true` permet au pilote PyMongo de gérer de manière transparente les échecs d'écriture transitoires : le pilote réessaie automatiquement l'opération dès que le nouveau primaire a été élu et découvert, évitant ainsi le rejet de requêtes applicatives si la coupure est très brève.
