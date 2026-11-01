@@ -3,7 +3,7 @@ Initialisation du schéma MongoDB pour le SIEM distribué.
 
 Ce script :
   1. Se connecte au cluster MongoDB via la variable d'environnement MONGO_URI
-     (valeur par défaut : mongodb://localhost:27017/?replicaSet=rs0)
+     (valeur par défaut : mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0)
   2. Crée les collections avec validation stricte par schéma ($jsonSchema)
   3. Crée les index optimisés pour les requêtes T (Transactionnelles),
      A (Analytiques/Agrégation) et S (Sécurité/Spark)
