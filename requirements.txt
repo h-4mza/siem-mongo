@@ -2,5 +2,5 @@ pymongo>=4.6.0
 Faker>=24.0.0
 numpy>=1.26.0
 streamlit>=1.30.0
-
+pyspark==3.5.0
 
