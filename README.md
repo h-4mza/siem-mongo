@@ -4,6 +4,19 @@ Projet universitaire implémentant une architecture SIEM (Security Information a
 
 ---
 
+## Démarrage rapide
+
+1. Une fois par PC, ajouter dans le fichier hosts (droits admin) :
+   `127.0.0.1 mongo1 mongo2 mongo3`
+2. `docker compose up -d`  (attendre ~45 s, les 3 mongo doivent être "healthy")
+3. `python data_generator/generate_data.py`
+4. `python schema/create_schema.py`   (réinitialise les collections)
+5. `python schema/load_data.py`       (à lancer UNE fois après create_schema)
+6. `python schema/verify_db.py`
+
+URI par défaut : mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0
+(utilisable aussi depuis les conteneurs Spark)
+
 ## 📁 Structure du projet
 
 ```text

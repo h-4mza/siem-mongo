@@ -1,0 +1,151 @@
+x-mongo: &mongo-base
+  image: mongo:7
+  restart: unless-stopped
+  networks:
+    - siem-network
+
+services:
+
+  mongo1:
+    <<: *mongo-base
+    container_name: siem-mongo1
+    hostname: mongo1
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27018"]
+    ports:
+      - "27018:27018"
+    volumes:
+      - mongo1_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27018", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  mongo2:
+    <<: *mongo-base
+    container_name: siem-mongo2
+    hostname: mongo2
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27019"]
+    ports:
+      - "27019:27019"
+    volumes:
+      - mongo2_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27019", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  mongo3:
+    <<: *mongo-base
+    container_name: siem-mongo3
+    hostname: mongo3
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all", "--port", "27020"]
+    ports:
+      - "27020:27020"
+    volumes:
+      - mongo3_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--port", "27020", "--quiet", "--eval", "db.adminCommand('ping').ok"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  mongo-init-replica:
+    image: mongo:7
+    container_name: siem-mongo-init
+    depends_on:
+      mongo1:
+        condition: service_healthy
+      mongo2:
+        condition: service_healthy
+      mongo3:
+        condition: service_healthy
+    networks:
+      - siem-network
+    restart: "no"
+    entrypoint:
+      - bash
+      - -c
+      - |
+        mongosh --host mongo1 --port 27018 --quiet --eval '
+          let initialized = false;
+          try { initialized = rs.status().ok === 1; } catch (e) { initialized = false; }
+          if (initialized) {
+            print("Replica set deja initialise.");
+          } else {
+            print("Initialisation du replica set rs0...");
+            printjson(rs.initiate({
+              _id: "rs0",
+              members: [
+                { _id: 0, host: "mongo1:27018", priority: 2 },
+                { _id: 1, host: "mongo2:27019", priority: 1 },
+                { _id: 2, host: "mongo3:27020", priority: 1 }
+              ]
+            }));
+          }
+          for (let i = 0; i < 30; i++) {
+            if (db.hello().isWritablePrimary) { print("Primaire elu : " + db.hello().me); break; }
+            sleep(2000);
+          }
+        '
+
+  spark-master:
+    image: apache/spark:3.5.0-python3
+    container_name: siem-spark-master
+    hostname: spark-master
+    command: >
+      /opt/spark/bin/spark-class
+      org.apache.spark.deploy.master.Master
+      --host spark-master
+      --port 7077
+      --webui-port 8080
+    ports:
+      - "${SPARK_UI_PORT:-8080}:8080"
+      - "${SPARK_MASTER_PORT:-7077}:7077"
+    networks:
+      - siem-network
+
+  spark-worker-1:
+    image: apache/spark:3.5.0-python3
+    container_name: siem-spark-worker-1
+    hostname: spark-worker-1
+    depends_on:
+      - spark-master
+    command: >
+      /opt/spark/bin/spark-class
+      org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --webui-port 8081
+    ports:
+      - "${SPARK_W1_UI_PORT:-8081}:8081"
+    networks:
+      - siem-network
+
+  spark-worker-2:
+    image: apache/spark:3.5.0-python3
+    container_name: siem-spark-worker-2
+    hostname: spark-worker-2
+    depends_on:
+      - spark-master
+    command: >
+      /opt/spark/bin/spark-class
+      org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+      --webui-port 8081
+    ports:
+      - "${SPARK_W2_UI_PORT:-8082}:8081"
+    networks:
+      - siem-network
+
+volumes:
+  mongo1_data:
+  mongo2_data:
+  mongo3_data:
+
+networks:
+  siem-network:
+    driver: bridge

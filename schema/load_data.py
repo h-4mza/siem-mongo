@@ -28,7 +28,7 @@ if sys.platform == "win32":
 # ==============================================================================
 # CONFIGURATION & CONNEXION
 # ==============================================================================
-DEFAULT_MONGO_URI = "mongodb://localhost:27017/?replicaSet=rs0"
+DEFAULT_MONGO_URI = "mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0"
 DB_NAME = "siem"
 BATCH_SIZE = 5000
 

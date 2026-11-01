@@ -41,7 +41,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 RESULTS_DIR = BASE_DIR / "results"
 CSV_FILE = RESULTS_DIR / "consistency_experiments.csv"
 
-DEFAULT_MONGO_URI = "mongodb://localhost:27017/?replicaSet=rs0"
+DEFAULT_MONGO_URI = "mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0"
 DB_NAME = "siem"
 
 
