@@ -146,7 +146,7 @@ L'infrastructure Spark est composée d'un **Spark Master** et de **deux Spark Wo
 #### Architecture Spark
 
 - Spark Master : `spark-master:7077`
-- Spark UI : `http://localhost:8080`
+- Spark UI : `http://localhost:8085` *(redirigé vers le port interne 8080 du conteneur master)*
 - Worker 1 : 1 cœur, 1 Go de mémoire
 - Worker 2 : 1 cœur, 1 Go de mémoire
 - Version Apache Spark : `3.5.0`
@@ -165,23 +165,79 @@ docker exec siem-spark-master /opt/spark/bin/spark-submit `
   /opt/spark-apps/test_connection.py
 ```
 
-Le test valide les collections suivantes :
+Le test valide les 6 collections : `users` (10 000), `hosts` (2 000), `authentications` (60 500), `network_flows` (40 500), `alerts` (3 200), `ip_blacklist` (200).
 
-| Collection | Nombre attendu |
-|---|---:|
-| users | 10 000 |
-| hosts | 2 000 |
-| authentications | 60 500 |
-| network_flows | 40 500 |
-| alerts | 3 200 |
-| ip_blacklist | 200 |
+#### Exécution des Jobs d'Analyse de Sécurité (S26 à S30)
 
-Les deux workers peuvent être vérifiés depuis l'interface Spark :
+Chaque job s'exécute dans le conteneur master via `spark-submit` et exporte ses résultats dans `results/spark_outputs/*.csv` :
 
-`http://localhost:8080`
+```powershell
+# S26 : Détection de force brute (fenêtre glissante 5 min, glissement 1 min)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s26_brute_force.py
 
-### 10. Lancement du Dashboard
+# S27 : Voyage impossible (2 connexions consécutives réussies dans 2 pays en < 1h)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s27_impossible_travel.py
 
-```bash
+# S28 : Taux d'échec d'authentification par département et rôle
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s28_failure_rate.py
+
+# S29 : Hôtes contactant des IP blacklistées (broadcast join de ip_blacklist)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s29_blacklist_hosts.py
+
+# S30 : Score de risque composite par utilisateur (Top 20)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s30_risk_score.py
+```
+
+#### Benchmark Global Spark (S26 à S30)
+Pour exécuter les 5 requêtes à la suite et mesurer séparément lecture et calcul dans `results/spark_timings.csv` :
+```powershell
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/spark_analysis.py
+```
+
+#### Comparatif de Performance Natif vs Spark (A16, A17, A20)
+Pour lancer la comparaison avec vérification de l'égalité stricte des résultats et export dans `results/spark_vs_native.csv` :
+```powershell
+python spark/compare_native_vs_spark.py
+```
+
+---
+
+### 10. Lancement du Dashboard de Supervision
+
+Le dashboard Streamlit intègre les visualisations Plotly (A16, A17, A19, A21) connectées au Replica Set MongoDB et l'onglet de détections Spark (S26, S30) :
+
+```powershell
 streamlit run dashboard/app.py
 ```
+
+Accès à l'application dans le navigateur : `http://localhost:8501`
