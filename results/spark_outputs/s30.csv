@@ -1,21 +1,21 @@
 user_id,department,role,is_service_account,nb_failures,nb_nocturnal,extra_countries,nb_impossible_travel,nb_blacklist,risk_score
-usr_07694,Finance,Auditeur Financier,False,5,5,3,2,0,13.0963
-usr_00007,Direction,Directeur Général,False,2,6,2,2,0,12.6074
-usr_07123,Juridique,Juriste d'Entreprise,False,2,5,2,2,0,12.3852
-usr_07098,Juridique,Compte de Service Applicatif,True,0,2,2,1,0,9.9667
-usr_06411,Direction,Compte de Service Applicatif,True,2,1,2,1,0,9.7444
-usr_09790,Support,Compte de Service Applicatif,True,1,1,2,1,0,9.6889
-usr_07612,RH,Compte de Service Applicatif,True,0,3,1,1,0,9.4
-usr_09990,Finance,Directeur Financier,False,3,6,2,1,0,7.6444
-usr_01393,Direction,Secrétaire Général,False,1,3,3,1,0,7.5037
-usr_08456,Ventes,Commercial Grands Comptes,False,1,3,3,1,0,7.5037
-usr_09072,Juridique,Avocat Conseil,False,1,3,3,1,0,7.5037
-usr_02442,Opérations,Agent d'Exploitation,False,0,3,3,1,0,7.4667
-usr_03860,Marketing,Chef de Produit,False,0,3,3,1,0,7.4667
-usr_06260,Support,Support Client N2,False,0,5,2,1,0,7.3111
-usr_04648,Finance,Comptable,False,0,2,3,1,0,7.2444
-usr_01022,Finance,Directeur Financier,False,1,4,2,1,0,7.1259
-usr_08557,Direction,Directeur Général,False,1,4,2,1,0,7.1259
-usr_03931,Finance,Contrôleur de Gestion,False,3,3,2,1,0,6.9778
-usr_08870,R&D,Développeur Backend,False,2,3,2,1,0,6.9407
-usr_03182,IT,Admin Système,False,1,3,2,1,0,6.9037
+usr_07694,Finance,Auditeur Financier,False,5,2,3,2,0,12.3852
+usr_00007,Direction,Directeur Général,False,2,4,2,2,0,12.0741
+usr_07123,Juridique,Juriste d'Entreprise,False,2,1,2,2,0,11.4741
+usr_09790,Support,Compte de Service Applicatif,True,1,2,2,1,0,9.9556
+usr_06411,Direction,Compte de Service Applicatif,True,2,1,2,1,0,9.7111
+usr_07098,Juridique,Compte de Service Applicatif,True,0,1,2,1,0,9.6
+usr_07612,RH,Compte de Service Applicatif,True,0,2,1,1,0,9.0
+usr_09072,Juridique,Avocat Conseil,False,1,6,3,1,0,8.037
+usr_00002,Juridique,Juriste d'Entreprise,False,4,5,3,1,0,7.9481
+usr_04648,Finance,Comptable,False,0,5,3,1,0,7.8
+usr_02622,Direction,Directeur Général,False,0,7,2,1,0,7.6
+usr_03860,Marketing,Chef de Produit,False,0,4,3,1,0,7.6
+usr_08842,Ventes,Commercial Grands Comptes,False,2,3,3,1,0,7.4741
+usr_01393,Direction,Secrétaire Général,False,1,2,3,1,0,7.237
+usr_03515,IT,Admin Système,False,0,5,2,1,0,7.2
+usr_05279,IT,DevOps,False,0,5,2,1,0,7.2
+usr_01928,Ventes,Ingénieur Avant-Vente,False,3,4,2,1,0,7.1111
+usr_01510,Direction,Secrétaire Général,False,2,4,2,1,0,7.0741
+usr_03182,IT,Admin Système,False,1,4,2,1,0,7.037
+usr_05047,Opérations,Responsable Logistique,False,1,4,2,1,0,7.037

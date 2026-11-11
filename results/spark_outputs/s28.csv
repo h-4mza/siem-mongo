@@ -1,44 +1,44 @@
 department,role,total_authentications,failed_authentications,successful_authentications,failure_rate
 R&D,Compte de Service Applicatif,194,42,152,0.2165
-Opérations,Compte de Service Applicatif,209,43,166,0.2057
-IT,Ingénieur Réseau,1158,238,920,0.2055
-IT,Architecte Cloud,1093,222,871,0.2031
+IT,Ingénieur Réseau,1162,238,924,0.2048
+IT,Architecte Cloud,1089,222,867,0.2039
 Finance,Comptable,1356,275,1081,0.2028
-RH,Chargé de Recrutement,1541,308,1233,0.1999
-Juridique,Juriste d'Entreprise,1783,352,1431,0.1974
+Opérations,Compte de Service Applicatif,213,43,170,0.2019
+RH,Chargé de Recrutement,1537,308,1229,0.2004
+Juridique,Juriste d'Entreprise,1787,352,1435,0.197
 Direction,Compte de Service Applicatif,199,39,160,0.196
-Support,Coordinateur Incident,1782,348,1434,0.1953
 IT,Admin Système,1187,231,956,0.1946
+Support,Coordinateur Incident,1794,348,1446,0.194
 IT,Compte de Service Applicatif,135,26,109,0.1926
 Ventes,Commercial Grands Comptes,2043,393,1650,0.1924
 Opérations,Agent d'Exploitation,2212,424,1788,0.1917
 Marketing,Compte de Service Applicatif,183,35,148,0.1913
+Opérations,Responsable Logistique,1976,376,1600,0.1903
 Juridique,Avocat Conseil,1944,370,1574,0.1903
+Juridique,DPO (Délégué Protection Données),1874,356,1518,0.19
+R&D,Développeur Frontend,1411,268,1143,0.1899
 Ventes,Ingénieur Avant-Vente,2007,381,1626,0.1898
-Juridique,DPO (Délégué Protection Données),1878,356,1522,0.1896
-Opérations,Responsable Logistique,1984,376,1608,0.1895
-Opérations,Chef de Projet,1743,330,1413,0.1893
+Opérations,Chef de Projet,1739,330,1409,0.1898
 Ventes,Compte de Service Applicatif,201,38,163,0.1891
-R&D,Développeur Frontend,1419,268,1151,0.1889
-RH,Responsable Formation,1392,263,1129,0.1889
 R&D,Développeur Backend,1478,279,1199,0.1888
-Finance,Auditeur Financier,1610,303,1307,0.1882
+Finance,Auditeur Financier,1606,303,1303,0.1887
+RH,Responsable Formation,1396,263,1133,0.1884
 RH,DRH,1339,252,1087,0.1882
 Direction,Directeur des Opérations,2029,381,1648,0.1878
 Ventes,Responsable Régional,1901,357,1544,0.1878
-Direction,Secrétaire Général,1912,358,1554,0.1872
-Support,Support Client N2,1887,351,1536,0.186
-IT,Analyste SOC,1195,222,973,0.1858
-RH,Gestionnaire Paie,1452,269,1183,0.1853
-Marketing,Chef de Produit,2238,412,1826,0.1841
+Direction,Secrétaire Général,1916,358,1558,0.1868
+Support,Support Client N2,1883,351,1532,0.1864
+Marketing,Chef de Produit,2230,412,1818,0.1848
+RH,Gestionnaire Paie,1456,269,1187,0.1848
+IT,Analyste SOC,1207,222,985,0.1839
 Support,Technicien N1,1949,358,1591,0.1837
-R&D,Ingénieur IA,1315,241,1074,0.1833
-Marketing,Responsable Communication,2028,369,1659,0.182
+Marketing,Responsable Communication,2020,369,1651,0.1827
+R&D,Ingénieur IA,1327,241,1086,0.1816
 Juridique,Compte de Service Applicatif,215,39,176,0.1814
 R&D,Data Scientist,1542,279,1263,0.1809
-Finance,Directeur Financier,1528,274,1254,0.1793
+Finance,Directeur Financier,1524,274,1250,0.1798
 IT,DevOps,1093,196,897,0.1793
-Finance,Contrôleur de Gestion,1539,268,1271,0.1741
+Finance,Contrôleur de Gestion,1544,268,1276,0.1736
 Direction,Directeur Général,2076,360,1716,0.1734
 Marketing,Community Manager,1978,343,1635,0.1734
 RH,Compte de Service Applicatif,194,33,161,0.1701
