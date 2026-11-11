@@ -1,0 +1,13 @@
+requete,methode,temps_ms,nb_resultats
+A16,natif,107.40,31
+A16,spark_lecture,3273.24,31
+A16,spark_calcul,1168.44,31
+A16,spark_total,4441.68,31
+A17,natif,18.97,10
+A17,spark_lecture,1508.25,10
+A17,spark_calcul,483.61,10
+A17,spark_total,1991.87,10
+A20,natif,27.68,20
+A20,spark_lecture,833.68,20
+A20,spark_calcul,450.19,20
+A20,spark_total,1283.87,20
