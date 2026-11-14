@@ -29,7 +29,8 @@ siem-mongo/
 ├── queries/                  # Requêtes analytiques et pipelines d'agrégation de sécurité
 ├── spark/                    # Traitements distribués et jobs d'analyse Spark
 ├── dashboard/                # Interface de visualisation des alertes et métriques
-└── report/                   # Documentation technique et livrables universitaires
+├── results/                  # Mesures (CSV) : temps, index, cohérence, panne, Spark
+└── report/                   # Rapport (PDF), notes de travail et captures d'écran
 ```
 
 ---
@@ -92,8 +93,6 @@ La connexion à la base de données s'effectue via la variable d'environnement `
 
 ## 🚀 Utilisation des scripts
 
-*(Ce guide sera complété au fur et à mesure de l'ajout des composants)*
-
 ### 1. Génération des jeux de données de simulation
 ```bash
 python data_generator/generate_data.py
@@ -140,11 +139,111 @@ python queries/failover_test.py
 ```
 
 ### 9. Jobs Spark
-```bash
-spark-submit --packages org.mongodb.spark:mongo-spark-connector_2.12:10.x.x spark/spark_analysis.py
+
+L'infrastructure Spark est composée d'un **Spark Master** et de **deux Spark Workers**, connectés au même réseau Docker que le Replica Set MongoDB.
+
+#### Architecture Spark
+
+- Spark Master : `spark-master:7077`
+- Spark UI : `http://localhost:8080` par défaut (`http://localhost:8085` si `SPARK_UI_PORT=8085` est défini dans un fichier `.env`, par exemple quand le port 8080 est déjà pris)
+- Worker 1 : 1 cœur, 1 Go de mémoire
+- Worker 2 : 1 cœur, 1 Go de mémoire
+- Version Apache Spark : `3.5.0`
+- MongoDB Spark Connector : `10.3.0`
+
+#### Vérification de la connexion Spark ↔ MongoDB
+
+Le script suivant permet de vérifier que Spark peut lire les collections MongoDB :
+
+```powershell
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/test_connection.py
 ```
 
-### 10. Lancement du Dashboard
-```bash
+Le test valide les 6 collections : `users` (10 000), `hosts` (2 000), `authentications` (60 500), `network_flows` (40 500), `alerts` (3 200), `ip_blacklist` (200).
+
+#### Exécution des Jobs d'Analyse de Sécurité (S26 à S30)
+
+Chaque job s'exécute dans le conteneur master via `spark-submit` et exporte ses résultats dans `results/spark_outputs/*.csv` :
+
+```powershell
+# S26 : Détection de force brute (fenêtre glissante 5 min, glissement 1 min)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s26_brute_force.py
+
+# S27 : Voyage impossible (2 connexions consécutives réussies dans 2 pays en < 1h)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s27_impossible_travel.py
+
+# S28 : Taux d'échec d'authentification par département et rôle
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s28_failure_rate.py
+
+# S29 : Hôtes contactant des IP blacklistées (broadcast join de ip_blacklist)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s29_blacklist_hosts.py
+
+# S30 : Score de risque composite par utilisateur (Top 20)
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/s30_risk_score.py
+```
+
+#### Benchmark Global Spark (S26 à S30)
+Pour exécuter les 5 requêtes à la suite et mesurer séparément lecture et calcul dans `results/spark_timings.csv` :
+```powershell
+docker exec siem-spark-master /opt/spark/bin/spark-submit `
+  --master spark://spark-master:7077 `
+  --packages org.mongodb.spark:mongo-spark-connector_2.12:10.3.0 `
+  --conf spark.jars.ivy=/tmp/.ivy2 `
+  --conf spark.mongodb.read.connection.uri="mongodb://mongo1:27018,mongo2:27019,mongo3:27020/?replicaSet=rs0" `
+  /opt/spark-apps/spark_analysis.py
+```
+
+#### Comparatif de Performance Natif vs Spark (A16, A17, A20)
+Pour lancer la comparaison avec vérification de l'égalité stricte des résultats et export dans `results/spark_vs_native.csv` :
+```powershell
+python spark/compare_native_vs_spark.py
+```
+
+---
+
+### 10. Lancement du Dashboard de Supervision
+
+Le dashboard Streamlit intègre les visualisations Plotly (A16, A17, A19, A21) connectées au Replica Set MongoDB et l'onglet de détections Spark (S26, S30) :
+
+```powershell
 streamlit run dashboard/app.py
 ```
+
+Accès à l'application dans le navigateur : `http://localhost:8501`
+---
+
+## Résultats et rapport
+
+- `report/Rapport_SIEM_MongoDB_Spark.pdf` : rapport final.
+- `results/` : mesures brutes (`timings.csv`, `index_experiments.csv`, `consistency_experiments.csv`, `failover_output.txt`, `spark_timings.csv`, `spark_vs_native.csv`, `spark_outputs/`). Les temps varient d'une exécution à l'autre selon la charge de la machine.
+- `report/notes_*.md` : notes de travail détaillées (schéma et requêtes, infrastructure, Spark et dashboard).

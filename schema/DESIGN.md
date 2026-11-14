@@ -40,7 +40,7 @@ Ce document formalise les décisions d'architecture et de modélisation de donn�
 | **authentications** | `(user_id, result, timestamp)` | Composé (1, 1, 1) | **T5** | **T5 (Audit des échecs d'un utilisateur)** : Filtrage sur `user_id` et `result="failure"` puis tri chronologique pour détecter la succession rapprochée d'échecs. |
 | **authentications** | `(host_id, timestamp)` | Composé (1, 1) | **T6** | **T6 (Journal d'activité d'un serveur)** : Restitution chronologique de toutes les connexions entrantes sur une machine cible. |
 | **authentications** | `(source_ip, timestamp)` | Composé (1, 1) | **S26** | **S26 (Détection de force brute)** : Regroupement par IP source attaquante sur des fenêtres temporelles de 5 minutes. |
-| **authentications** | `(result, timestamp)` | Composé (1, 1) | **A17** | **A17 (Top 10 IP avec échecs sur une journée)** : Respect strict de la règle ESR (Égalité sur `result="failure"` puis filtre d'intervalle sur `timestamp`). Mesuré **2.3x plus rapide** que l'index temporel seul (11.45 ms vs 26.38 ms). |
+| **authentications** | `(result, timestamp)` | Composé (1, 1) | **A17** | **A17 (Top 10 IP avec échecs sur une journée)** : Respect strict de la règle ESR (Égalité sur `result="failure"` puis filtre d'intervalle sur `timestamp`). Examine 37 % de documents en moins que l'index temporel seul (2 814 contre 4 503) ; l'écart de temps (27.58 ms contre 32.15 ms) est trop faible pour être conclusif. |
 | **authentications** | `timestamp` | Simple (1) | **A16** | **A16 (Recherche globale par intervalle de temps)** : Requêtes d'intervalles (*range queries*) sur des plages de dates globales pour le SIEM. |
 | **network_flows** | `(host_id, timestamp)` | Composé (1, 1) | Analyse flux serveur | Chronologie des connexions réseau établies par une machine compromise. |
 | **network_flows** | `src_ip` | Simple (1) | Détection latérale | Filtrage sur l'adresse source interne pour pister la propagation d'une attaque. |
@@ -93,9 +93,9 @@ db.authentications.aggregate([
 
 | Critère | Approche Normalisée avec `$lookup` | Approche Retenue (Dénormalisation) |
 | :--- | :--- | :--- |
-| **Temps d'exécution mesuré** | **783.09 ms** | **132.82 ms** (**5.9x plus rapide**) |
+| **Temps d'exécution mesuré** | **1290.54 ms** | **278.25 ms** (**4.6x plus rapide**) |
 | **Complexité de la requête** | Nécessite une étape `$lookup` qui effectue des milliers de résolutions croisées entre la collection `authentications` et `users`. | Pipeline d'agrégation direct sur la seule collection `authentications`. |
-| **Documents traités en mémoire** | 16 735 documents retournés et croisés avec la collection `users`. | 1 779 documents filtrés et agrégés directement en streaming. |
+| **Documents traités en mémoire** | 16 991 documents retournés et croisés avec la collection `users`. | 1 732 documents filtrés et agrégés directement en streaming. |
 | **Distribution & Scalabilité** | Dans un cluster shardt/replica set ou un cluster Spark distribué, les `$lookup` nécessitent des transferts réseau importants entre partitions. | Aucun échange inter-collections nécessaire. Chaque partition Spark peut traiter ses événements localement. |
 | **Impact sur l'écriture** | Aucun. | Minime : copie d'une chaîne courte (~10 octets) lors de l'insertion de l'événement. |
 | **Cohérence des données d'audit** | En cas de changement de département, le log reflèterait le *nouveau* département au lieu de la situation historique. | Parfaite : l'événement de journalisation consigne fidèlement le département de l'utilisateur **au moment exact** où l'accès a eu lieu. |
