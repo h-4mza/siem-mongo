@@ -29,7 +29,8 @@ siem-mongo/
 ├── queries/                  # Requêtes analytiques et pipelines d'agrégation de sécurité
 ├── spark/                    # Traitements distribués et jobs d'analyse Spark
 ├── dashboard/                # Interface de visualisation des alertes et métriques
-└── report/                   # Documentation technique et livrables universitaires
+├── results/                  # Mesures (CSV) : temps, index, cohérence, panne, Spark
+└── report/                   # Rapport (PDF), notes de travail et captures d'écran
 ```
 
 ---
@@ -92,8 +93,6 @@ La connexion à la base de données s'effectue via la variable d'environnement `
 
 ## 🚀 Utilisation des scripts
 
-*(Ce guide sera complété au fur et à mesure de l'ajout des composants)*
-
 ### 1. Génération des jeux de données de simulation
 ```bash
 python data_generator/generate_data.py
@@ -146,7 +145,7 @@ L'infrastructure Spark est composée d'un **Spark Master** et de **deux Spark Wo
 #### Architecture Spark
 
 - Spark Master : `spark-master:7077`
-- Spark UI : `http://localhost:8085` *(redirigé vers le port interne 8080 du conteneur master)*
+- Spark UI : `http://localhost:8080` par défaut (`http://localhost:8085` si `SPARK_UI_PORT=8085` est défini dans un fichier `.env`, par exemple quand le port 8080 est déjà pris)
 - Worker 1 : 1 cœur, 1 Go de mémoire
 - Worker 2 : 1 cœur, 1 Go de mémoire
 - Version Apache Spark : `3.5.0`
@@ -241,3 +240,10 @@ streamlit run dashboard/app.py
 ```
 
 Accès à l'application dans le navigateur : `http://localhost:8501`
+---
+
+## Résultats et rapport
+
+- `report/Rapport_SIEM_MongoDB_Spark.pdf` : rapport final.
+- `results/` : mesures brutes (`timings.csv`, `index_experiments.csv`, `consistency_experiments.csv`, `failover_output.txt`, `spark_timings.csv`, `spark_vs_native.csv`, `spark_outputs/`). Les temps varient d'une exécution à l'autre selon la charge de la machine.
+- `report/notes_*.md` : notes de travail détaillées (schéma et requêtes, infrastructure, Spark et dashboard).

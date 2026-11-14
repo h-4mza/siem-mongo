@@ -141,6 +141,8 @@ Son interface Web est accessible depuis la machine hôte à l'adresse :
 http://localhost:8080
 ```
 
+(ou `http://localhost:8085` si `SPARK_UI_PORT=8085` est défini dans un fichier `.env`)
+
 Les deux Workers sont configurés avec les ressources suivantes :
 
 ```text
@@ -240,11 +242,7 @@ L'exécution a été validée dans l'interface Spark avec les résultats suivant
 - l'application `SIEM-MongoDB-Connection-Test` correctement soumise au cluster ;
 - état final de l'application : `FINISHED`.
 
-La capture correspondante est disponible dans :
-
-```text
-report/img/spark_ui.png
-```
+La capture de l'interface Spark avec les applications S26 à S30 est `report/img/05_spark_ui_jobs.png`.
 
 Cette validation confirme que le cluster Spark est opérationnel et prêt à être utilisé pour les traitements distribués et les jobs d'analyse de la prochaine phase du projet.
 
@@ -339,7 +337,7 @@ Le Replica Set MongoDB est configuré avec trois membres, ce qui permet de maint
 
 La priorité supérieure attribuée à `mongo1` signifie que ce nœud est privilégié lors des élections lorsqu'il est disponible. Toutefois, lorsqu'il est arrêté ou indisponible, un autre membre éligible du Replica Set peut être élu Primary.
 
-La procédure de test de bascule décrite par P2 correspond donc au comportement attendu de l'architecture MongoDB configurée dans ce projet.
+La procédure de test de bascule décrite dans `queries/failover_test.py` correspond donc au comportement attendu de l'architecture MongoDB configurée dans ce projet.
 
 Il est important de noter que, dans cet environnement universitaire, la panne est simulée par l'arrêt d'un conteneur Docker. Le mécanisme d'élection reste néanmoins celui d'un véritable Replica Set MongoDB.
 

@@ -15,7 +15,7 @@ Chaque job a été implémenté en PySpark (API DataFrames), exécuté en mode d
 | Requête | Description | Lecture (ms) | Calcul (ms) | Total (ms) | Nb Résultats |
 | :--- | :--- | :---: | :---: | :---: | :---: |
 | **S26** | Détection d'attaques par force brute (fenêtre 5 min) | 23 944,06 | 5 498,63 | 29 442,69 | 6 |
-| **S27** | Détection d'anomalies de voyage impossible (< 1h) | 12 245,16 | 2 534,46 | 14 779,62 | 73 |
+| **S27** | Détection d'anomalies de voyage impossible (< 1h) | 12 245,16 | 2 534,46 | 14 779,62 | 78 |
 | **S28** | Taux d'échec par département et rôle (jointure) | 6 885,03 | 2 000,85 | 8 885,88 | 45 |
 | **S29** | Hôtes contactant des IP en liste noire (broadcast) | 3 679,98 | 1 581,29 | 5 261,27 | 35 |
 | **S30** | Score de risque composite par utilisateur (Top 20) | 3 683,14 | 5 479,02 | 9 162,16 | 20 |
@@ -47,10 +47,10 @@ Chaque job a été implémenté en PySpark (API DataFrames), exécuté en mode d
   3. Calculs via fonctions analytiques : `lag("geo.country", 1)` et `lag("timestamp", 1)`.
   4. Filtre de voyage : `prev_country.isNotNull() AND current_country != prev_country AND delta_seconds < 3600 AND delta_seconds >= 0`.
 - **Résultats trouvés vs attendus** :
-  - **Nombre total d'événements** : 73 événements.
-  - **Utilisateurs distincts détectés** : **70 utilisateurs** (attendu : ≥ 35).
-  - **Part des cas injectés FR <-> JP** : **36 utilisateurs** (soit les 35 utilisateurs ciblés par le générateur + 1 cas FR/JP généré aléatoirement), représentant **51,43 %** du total.
-  - **Part du bruit statistique (faux positifs)** : **34 utilisateurs** (soit **48,57 %**). Cette proportion s'explique mathématiquement par la distribution aléatoire de 1 à 3 pays habituels (`usual_countries`) parmi 10 000 utilisateurs réalisant 60 500 authentifications sur 30 jours.
+  - **Nombre total d'événements** : 78 événements.
+  - **Utilisateurs distincts détectés** : **75 utilisateurs** (attendu : ≥ 35).
+  - **Part des cas injectés FR <-> JP** : **36 utilisateurs** (soit les 35 utilisateurs ciblés par le générateur + 1 cas FR/JP généré aléatoirement), représentant **48,00 %** du total.
+  - **Part du bruit statistique (faux positifs)** : **39 utilisateurs** (soit **52,00 %**). Cette proportion s'explique mathématiquement par la distribution aléatoire de 1 à 3 pays habituels (`usual_countries`) parmi 10 000 utilisateurs réalisant 60 500 authentifications sur 30 jours.
 - **Fichier généré** : `results/spark_outputs/s27.csv`.
 
 #### S28 : Taux d'échec par département et rôle
@@ -62,7 +62,7 @@ Chaque job a été implémenté en PySpark (API DataFrames), exécuté en mode d
 - **Résultats trouvés vs attendus** :
   - **Trouvé** : **45 groupes distincts** (9 départements × 5 rôles).
   - **Attendu** : 45 groupes.
-  - **Mesure clé** : Taux d'échec moyen oscillant entre 17,8 % et 20,1 % selon les rôles.
+  - **Mesure clé** : Taux d'échec moyen oscillant entre 16,3 % et 21,7 % selon les rôles.
 - **Fichier généré** : `results/spark_outputs/s28.csv`.
 
 #### S29 : Hôtes communicant avec la liste noire (Broadcast Join)
@@ -114,56 +114,56 @@ $$\text{score\_final} = \text{score\_brut} \times (1.5 \text{ si } \text{is\_ser
 
 | Rang | User ID | Département | Rôle / Type | Svc Acc | Échecs | Nocturnes | Pays+ (>1) | Voyage Imposs. | Blacklist | Score |
 | :---: | :--- | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **1** | `usr_07694` | Finance | Auditeur Financier | non | 5 | 5 | 3 | 2 | 0 | **13.0963** |
-| **2** | `usr_00007` | Direction | Directeur Général | non | 2 | 6 | 2 | 2 | 0 | **12.6074** |
-| **3** | `usr_07123` | Juridique | Juriste d'Entreprise | non | 2 | 5 | 2 | 2 | 0 | **12.3852** |
-| **4** | `usr_07098` | Juridique | Compte de Service Applicatif | **OUI** | 0 | 2 | 2 | 1 | 0 | **9.9667** |
-| **5** | `usr_06411` | Direction | Compte de Service Applicatif | **OUI** | 2 | 1 | 2 | 1 | 0 | **9.7444** |
-| **6** | `usr_09790` | Support | Compte de Service Applicatif | **OUI** | 1 | 1 | 2 | 1 | 0 | **9.6889** |
-| **7** | `usr_07612` | RH | Compte de Service Applicatif | **OUI** | 0 | 3 | 1 | 1 | 0 | **9.4000** |
-| **8** | `usr_09990` | Finance | Directeur Financier | non | 3 | 6 | 2 | 1 | 0 | **7.6444** |
-| **9** | `usr_01393` | Direction | Secrétaire Général | non | 1 | 3 | 3 | 1 | 0 | **7.5037** |
-| **10** | `usr_08456` | Ventes | Commercial Grands Comptes | non | 1 | 3 | 3 | 1 | 0 | **7.5037** |
-| **11** | `usr_09072` | Juridique | Avocat Conseil | non | 1 | 3 | 3 | 1 | 0 | **7.5037** |
-| **12** | `usr_02442` | Opérations | Agent d'Exploitation | non | 0 | 3 | 3 | 1 | 0 | **7.4667** |
-| **13** | `usr_03860` | Marketing | Chef de Produit | non | 0 | 3 | 3 | 1 | 0 | **7.4667** |
-| **14** | `usr_06260` | Support | Support Client N2 | non | 0 | 5 | 2 | 1 | 0 | **7.3111** |
-| **15** | `usr_04648` | Finance | Comptable | non | 0 | 2 | 3 | 1 | 0 | **7.2444** |
-| **16** | `usr_01022` | Finance | Directeur Financier | non | 1 | 4 | 2 | 1 | 0 | **7.1259** |
-| **17** | `usr_08557` | Direction | Directeur Général | non | 1 | 4 | 2 | 1 | 0 | **7.1259** |
-| **18** | `usr_03931` | Finance | Contrôleur de Gestion | non | 3 | 3 | 2 | 1 | 0 | **6.9778** |
-| **19** | `usr_08870` | R&D | Développeur Backend | non | 2 | 3 | 2 | 1 | 0 | **6.9407** |
-| **20** | `usr_03182` | IT | Admin Système | non | 1 | 3 | 2 | 1 | 0 | **6.9037** |
+| **1** | `usr_07694` | Finance | Auditeur Financier | non | 5 | 2 | 3 | 2 | 0 | **12.3852** |
+| **2** | `usr_00007` | Direction | Directeur Général | non | 2 | 4 | 2 | 2 | 0 | **12.0741** |
+| **3** | `usr_07123` | Juridique | Juriste d'Entreprise | non | 2 | 1 | 2 | 2 | 0 | **11.4741** |
+| **4** | `usr_09790` | Support | Compte de Service Applicatif | **OUI** | 1 | 2 | 2 | 1 | 0 | **9.9556** |
+| **5** | `usr_06411` | Direction | Compte de Service Applicatif | **OUI** | 2 | 1 | 2 | 1 | 0 | **9.7111** |
+| **6** | `usr_07098` | Juridique | Compte de Service Applicatif | **OUI** | 0 | 1 | 2 | 1 | 0 | **9.6000** |
+| **7** | `usr_07612` | RH | Compte de Service Applicatif | **OUI** | 0 | 2 | 1 | 1 | 0 | **9.0000** |
+| **8** | `usr_09072` | Juridique | Avocat Conseil | non | 1 | 6 | 3 | 1 | 0 | **8.0370** |
+| **9** | `usr_00002` | Juridique | Juriste d'Entreprise | non | 4 | 5 | 3 | 1 | 0 | **7.9481** |
+| **10** | `usr_04648` | Finance | Comptable | non | 0 | 5 | 3 | 1 | 0 | **7.8000** |
+| **11** | `usr_02622` | Direction | Directeur Général | non | 0 | 7 | 2 | 1 | 0 | **7.6000** |
+| **12** | `usr_03860` | Marketing | Chef de Produit | non | 0 | 4 | 3 | 1 | 0 | **7.6000** |
+| **13** | `usr_08842` | Ventes | Commercial Grands Comptes | non | 2 | 3 | 3 | 1 | 0 | **7.4741** |
+| **14** | `usr_01393` | Direction | Secrétaire Général | non | 1 | 2 | 3 | 1 | 0 | **7.2370** |
+| **15** | `usr_03515` | IT | Admin Système | non | 0 | 5 | 2 | 1 | 0 | **7.2000** |
+| **16** | `usr_05279` | IT | DevOps | non | 0 | 5 | 2 | 1 | 0 | **7.2000** |
+| **17** | `usr_01928` | Ventes | Ingénieur Avant-Vente | non | 3 | 4 | 2 | 1 | 0 | **7.1111** |
+| **18** | `usr_01510` | Direction | Secrétaire Général | non | 2 | 4 | 2 | 1 | 0 | **7.0741** |
+| **19** | `usr_03182` | IT | Admin Système | non | 1 | 4 | 2 | 1 | 0 | **7.0370** |
+| **20** | `usr_05047` | Opérations | Responsable Logistique | non | 1 | 4 | 2 | 1 | 0 | **7.0370** |
 
 ---
 
 ### Analyse critique du Top 20 et proposition d'ajustement
 
 1. **Sur-représentation du voyage impossible** :
-   - **14 des 20 utilisateurs (70 %)** proviennent directement des 35 comptes ciblés par l'attaque S27 (pattern injecté FR <-> JP).
-   - Les 6 autres utilisateurs du Top 20 ont tous au moins 1 voyage impossible issu du bruit statistique multi-pays.
+   - **12 des 20 utilisateurs (60 %)** proviennent directement des 36 comptes France-Japon détectés (35 injectés plus 1 cas aléatoire) par l'attaque S27 (pattern injecté FR <-> JP).
+   - Les 8 autres utilisateurs du Top 20 ont tous au moins 1 voyage impossible issu du bruit statistique multi-pays.
    - **100 % des membres du Top 20 possèdent au moins un voyage impossible.**
 
 2. **Éviction totale des victimes de force brute (S26)** :
-   - **0 utilisateur parmi les 6 victimes de force brute S26** (`usr_00472`, `usr_02104`, `usr_02982`, `usr_05113`, `usr_08478`, `usr_08846`) n'apparaît dans le Top 20.
-   - Pourtant, ces comptes subissent entre 25 et 27 échecs massifs (les maxima absolus de la base de données).
+   - **Aucun des comptes visés par la force brute (S26)** n'apparaît dans le Top 20.
+   - Pourtant, ces comptes subissent entre 25 et 27 échecs massifs (les maxima absolus de la base), alors que le Top 20 ne dépasse pas 5 échecs.
    - **Cause mathématique** :
      - Pour le voyage impossible, $\max = 2$. Un seul événement rapporte $10.0 \times (1 / 2) = \mathbf{5,0}$ **points**. Deux événements rapportent **10,0 points**.
      - Pour les échecs, $\max = 27$. Subir 27 échecs violents ne rapporte que $1.0 \times (27 / 27) = \mathbf{1,0}$ **point** !
-     - Le score total d'une victime de force brute culmine à **~2,87**, ce qui la place très en dessous du 20ᵉ seuil du Top 20 (fixé à **6,9037**).
+     - Le score total d'une victime de force brute reste inférieur à 3 points, très en dessous du 20ᵉ score du Top 20 (**7,0370**).
    - Par ailleurs, le signal `ip_blacklist` est inactif ($\max = 0$) car injecté sur la couche réseau et non sur les authentifications.
 
 3. **Proposition d'ajustement des poids** :
    - Augmenter le poids de `failures` à **6.0** (un pic de force brute rapportera ~5,5 à 6,0 points).
    - Ajuster `impossible_travel` à **7.0** (1 événement = 3,5 points, 2 événements = 7,0 points).
    - Réduire `extra_countries` à **2.0** pour ne pas sur-pénaliser les collaborateurs mobiles légitimes.
-   - *Impact calculé* : Une victime de 27 échecs avec 3 accès nocturnes obtiendrait $6.0 \times 1.0 + 2.0 \times (3/9) + 2.0 \times (2/5) = \mathbf{7,47}$, la propulsant immédiatement dans le **Top 10**, assurant un équilibre sain entre détection d'attaques sur les identifiants et détournements de session.
+   - *Impact calculé* : Une victime de 27 échecs avec 3 accès nocturnes obtiendrait $6.0 \times 1.0 + 2.0 \times (3/10) + 2.0 \times (2/5) = \mathbf{7,40}$, la propulsant immédiatement dans le **Top 10**, assurant un équilibre sain entre détection d'attaques sur les identifiants et détournements de session.
 
 ---
 
 ## 3. Comparatif de Performance : MongoDB Natif vs Apache Spark
 
-Mesures moyennes issues de [`results/spark_vs_native.csv`](file:///C:/Users/HP/Desktop/Big%20data/siem-mongo/results/spark_vs_native.csv) :
+Mesures moyennes issues de [`results/spark_vs_native.csv`](../results/spark_vs_native.csv) :
 - **Natif** : 5 itérations pymongo sur l'hôte.
 - **Spark** : 6 itérations distribuées dans le conteneur, avec première itération (cold start) systématiquement écartée.
 
@@ -206,7 +206,7 @@ Mesures moyennes issues de [`results/spark_vs_native.csv`](file:///C:/Users/HP/D
 ## 5. Limites Identifiées du Système
 
 1. **Taux de faux positifs dans la détection spatiale (S27)** :
-   Le taux de faux positifs atteint **48,57 %** (34 utilisateurs sur 70). En l'absence de géolocalisation continue ou d'analyse contextuelle de la vitesse moyenne de déplacement (formule de haversine en km/h plutôt qu'un simple changement de code pays), un tirage aléatoire de pays habituels produit naturellement des alertes non pertinentes.
+   Le taux de faux positifs atteint **52 %** (39 utilisateurs sur 75). En l'absence de géolocalisation continue ou d'analyse contextuelle de la vitesse moyenne de déplacement (formule de haversine en km/h plutôt qu'un simple changement de code pays), un tirage aléatoire de pays habituels produit naturellement des alertes non pertinentes.
 2. **Volume de données modeste** :
    Avec 60 500 authentifications et 40 500 flux réseau, le jeu de données loge intégralement dans le cache mémoire de MongoDB (WiredTiger configuré à 1,5 Go). Ce volume met en valeur la vitesse du moteur C++ de MongoDB et pénalise Spark qui n'atteint son seuil de rentabilité qu'à partir de plusieurs millions de documents.
 3. **Environnement mono-hôte (Docker sous Windows / WSL2)** :

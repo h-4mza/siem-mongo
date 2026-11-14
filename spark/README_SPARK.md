@@ -201,6 +201,8 @@ L'interface Web du Spark Master est accessible à l'adresse :
 http://localhost:8080
 ```
 
+(ou `http://localhost:8085` si `SPARK_UI_PORT=8085` est défini dans un fichier `.env`)
+
 Elle permet de vérifier :
 
 - l'état des Workers ;
